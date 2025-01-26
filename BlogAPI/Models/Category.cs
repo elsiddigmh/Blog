@@ -1,8 +1,12 @@
-﻿namespace BlogAPI.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BlogAPI.Models
 {
     public class Category
     {
         public int Id { get; set; }
+        [Required]
+        [MaxLength(20)]
         public string Name { get; set; }
         public string Slug { get; set; }
 
