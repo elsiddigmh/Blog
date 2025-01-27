@@ -16,6 +16,7 @@ namespace BlogAPI.Repository
         public async Task CreateAsync(T entity)
         {
             await dbSet.AddAsync(entity);
+            await SaveAsync();
         }
 
         public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string[]? includeProperties = null)
@@ -60,6 +61,7 @@ namespace BlogAPI.Repository
         public async Task RemoveAsync(T entity)
         {
              dbSet.Remove(entity);
+             await SaveAsync();
         }
 
         public async Task SaveAsync()
