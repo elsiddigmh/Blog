@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BlogAPI.Models;
+using BlogAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BlogAPI.Controllers
 {
@@ -7,9 +9,25 @@ namespace BlogAPI.Controllers
     [ApiController]
     public class CategoryAPIController : Controller
     {
-        public IActionResult Index()
+        protected APIResponse _response;
+        private readonly ICategoryRepository _categoryRepository;
+
+        public CategoryAPIController(ICategoryRepository categoryRepository)
         {
-            return View();
+            _response = new APIResponse();
+            _categoryRepository = categoryRepository;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<APIResponse>> GetCategories()
+        {
+            var categories = await _categoryRepository.GetAllAsync();
+
+            if (categories == null) {
+                return BadRequest();
+            }
+
+            return Ok(categories);
         }
     }
 }
