@@ -2,7 +2,7 @@
 
 namespace BlogAPI.Models.Dto
 {
-    public class PostCreateDTO
+    public class PostUpdateDTO
     {
         [Required]
         public string Title { get; set; }

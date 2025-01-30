@@ -1,4 +1,6 @@
-﻿using BlogAPI.Models;
+﻿using AutoMapper;
+using BlogAPI.Models;
+using BlogAPI.Models.Dto;
 using BlogAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -11,10 +13,11 @@ namespace BlogAPI.Controllers
     {
         private readonly IPostRepository _postRepository;
         protected APIResponse _response;
-
-        public PostAPIController(IPostRepository postRepository)
+        private readonly IMapper _mapper;
+        public PostAPIController(IPostRepository postRepository, IMapper mapper)
         {
             _postRepository = postRepository;
+            _mapper = mapper;
             _response = new APIResponse();
         }
 
@@ -48,6 +51,16 @@ namespace BlogAPI.Controllers
                 _response.ErrorMessages.Add("There's no post whith this id");
                 return NotFound(_response);
             }
+
+            //Manuel Mapping
+            //PostDTO postDTO = new PostDTO
+            //{
+            //    Id = id,
+            //   ... = ... ect
+            //}
+            //
+            PostDTO postDTO = _mapper.Map<PostDTO>(post);
+
             _response.StatusCode = HttpStatusCode.OK;
             _response.IsSuccess = true;
             _response.Result = post;

@@ -1,0 +1,16 @@
+﻿using AutoMapper;
+using BlogAPI.Models;
+using BlogAPI.Models.Dto;
+
+namespace BlogAPI
+{
+    public class MappingConfig : Profile
+    {
+        public MappingConfig()
+        {
+            CreateMap<Post, PostDTO>().ReverseMap();
+            CreateMap<Post, PostCreateDTO>().ReverseMap();
+            CreateMap<Post, PostUpdateDTO>().ReverseMap();
+        }
+    }
+}
