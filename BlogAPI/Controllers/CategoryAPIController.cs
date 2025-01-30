@@ -53,7 +53,7 @@ namespace BlogAPI.Controllers
         }
 
 
-        [HttpGet("{id:int}", Name = "GetCategoty")]
+        [HttpGet("{id:int}", Name = "GetCategory")]
         public async Task<ActionResult<APIResponse>> GetGategory(int id)
         {
             if (id == null || id == 0) { 
@@ -74,6 +74,34 @@ namespace BlogAPI.Controllers
             _response.Result = categoryDTO;
             _response.IsSuccess = true;
             return Ok(_response);
+        }
+
+        [HttpPost(Name = "CreateCategory")]
+        public async Task<ActionResult<APIResponse>> CreateCategory([FromBody]CategoryCreateDTO createDTO)
+        {
+            bool isNameFound = await _categoryRepository.GetAsync(u => u.Name == createDTO.Name) != null;
+            if (isNameFound)
+            {
+                ModelState.AddModelError("ErrorMessages", "Category name already exists!");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Category category = new Category
+            {
+                Name = createDTO.Name,
+                Slug = Helpers.Helpers.GenerateSlug(createDTO.Name)
+            };
+
+            await _categoryRepository.CreateAsync(category);
+            _response.StatusCode = HttpStatusCode.Created;
+            _response.Result = category;
+            _response.IsSuccess = true;
+            return CreatedAtRoute("GetCategory", new { id = category.Id }, _response);
+
         }
 
 
