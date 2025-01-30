@@ -32,7 +32,7 @@ namespace BlogAPI.Controllers
                 return BadRequest(_response);
             }
             List<CategoryDTO> categoriesDTO = new List<CategoryDTO>();
-            foreach(var category in categories)
+            foreach (var category in categories)
             {
                 var categoryDTO = new CategoryDTO
                 {
@@ -51,5 +51,32 @@ namespace BlogAPI.Controllers
 
             return Ok(_response);
         }
+
+
+        [HttpGet("{id:int}", Name = "GetCategoty")]
+        public async Task<ActionResult<APIResponse>> GetGategory(int id)
+        {
+            if (id == null || id == 0) { 
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Invalid id value");
+                return BadRequest(_response);
+            }
+            var category = await _categoryRepository.GetAsync(u=>u.Id == id);
+            CategoryDTO categoryDTO = new CategoryDTO
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Slug = category.Slug,
+                Posts = category.Posts,
+            };
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.Result = categoryDTO;
+            _response.IsSuccess = true;
+            return Ok(_response);
+        }
+
+
+
     }
 }
