@@ -25,7 +25,8 @@ namespace BlogAPI.Controllers
         {
             var categories = await _categoryRepository.GetAllAsync();
 
-            if (categories == null) {
+            if (categories == null)
+            {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
                 _response.ErrorMessages.Add("There's no categories");
@@ -56,13 +57,14 @@ namespace BlogAPI.Controllers
         [HttpGet("{id:int}", Name = "GetCategory")]
         public async Task<ActionResult<APIResponse>> GetGategory(int id)
         {
-            if (id == null || id == 0) { 
+            if (id == 0)
+            {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
                 _response.ErrorMessages.Add("Invalid id value");
                 return BadRequest(_response);
             }
-            var category = await _categoryRepository.GetAsync(u=>u.Id == id);
+            var category = await _categoryRepository.GetAsync(u => u.Id == id);
             CategoryDTO categoryDTO = new CategoryDTO
             {
                 Id = category.Id,
@@ -77,7 +79,7 @@ namespace BlogAPI.Controllers
         }
 
         [HttpPost(Name = "CreateCategory")]
-        public async Task<ActionResult<APIResponse>> CreateCategory([FromBody]CategoryCreateDTO createDTO)
+        public async Task<ActionResult<APIResponse>> CreateCategory([FromBody] CategoryCreateDTO createDTO)
         {
             bool isNameFound = await _categoryRepository.GetAsync(u => u.Name == createDTO.Name) != null;
             if (isNameFound)
@@ -105,6 +107,55 @@ namespace BlogAPI.Controllers
         }
 
 
+        [HttpPut("{id:int}", Name = "UpdateCategory")]
+        public async Task<ActionResult<APIResponse>> UpdateCategory([FromBody] CategoryUpdateDTO updateDTO, int id)
+        {
+            if (updateDTO == null || id == 0)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                ModelState.AddModelError("ErrorMessages", "Invalid or empty data");
+                return BadRequest(_response);
+            }
+            var category = await _categoryRepository.GetAsync(u => u.Id == id);
+            if (category == null)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                ModelState.AddModelError("ErrorMessages", "Category not found");
+                return NotFound(_response);
+            }
+            category = new Category
+            {
+                Id = id,
+                Name = updateDTO.Name,
+                Slug = Helpers.Helpers.GenerateSlug(updateDTO.Name)
+            };
+            await _categoryRepository.UpdateAsync(category);
+            _response.StatusCode = HttpStatusCode.Created;
+            _response.IsSuccess = true;
+            _response.Result = category;
+            return Ok(_response);
+        }
 
+        [HttpDelete("{id:int}", Name = "DeleteCategory")]
+        public async Task<ActionResult<APIResponse>> DeleteCategory(int id)
+        {
+            if(id == 0)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Invalid id value");
+                return BadRequest(_response);
+            }
+
+            var category = await _categoryRepository.GetAsync(u=>u.Id  == id);
+            await _categoryRepository.RemoveAsync(category);
+            _response.StatusCode = HttpStatusCode.NoContent;
+            _response.IsSuccess = true;
+            return Ok(_response);
+
+
+        }
     }
 }
