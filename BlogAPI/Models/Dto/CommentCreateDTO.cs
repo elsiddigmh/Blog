@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.Models
+namespace BlogAPI.Models.Dto
 {
-    public class Comment
+    public class CommentCreateDTO
     {
-        public int Id { get; set; }
         [Required]
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -13,9 +12,9 @@ namespace BlogAPI.Models
         // Relationships
         [Required]
         public int PostId { get; set; }
-        public Post Post { get; set; } // Navigation Property
         [Required]
         public int UserId { get; set; }
-        public User User { get; set; } // Navigation Property
     }
+
+
 }
