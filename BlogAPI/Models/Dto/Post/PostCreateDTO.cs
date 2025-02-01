@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.Models.Dto
+namespace BlogAPI.Models.Dto.Post
 {
-    public class PostUpdateDTO
+    public class PostCreateDTO
     {
-        [Required]
-        public int Id { get; set; }
         [Required]
         public string Title { get; set; }
         public string Content { get; set; }

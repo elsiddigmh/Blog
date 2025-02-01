@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.Models.Dto
+namespace BlogAPI.Models.Dto.Comment
 {
-    public class CommentCreateDTO
+    public class CommentUpdateDTO
     {
+        [Required]
+        public int Id { get; set; }
         [Required]
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }

@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.Models.Dto
+namespace BlogAPI.Models.Dto.User
 {
     public class UserUpdateDTO
     {
         [Required]
-        public int Id { get; set; } 
+        public int Id { get; set; }
         [Required]
         [MaxLength(20)]
         public string UserName { get; set; }

@@ -1,5 +1,5 @@
 ﻿using BlogAPI.Models;
-using BlogAPI.Models.Dto;
+using BlogAPI.Models.Dto.Category;
 using BlogAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
