@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.Models.Dto.Category
+namespace BlogAPI.Models.Dto
 {
-    public class CategoryCreateDTO
+    public class CategoryUpdateDTO
     {
         [Required]
         [MaxLength(20)]

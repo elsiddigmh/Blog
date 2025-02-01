@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.Models.Dto.Post
+namespace BlogAPI.Models.Dto
 {
     public class PostDTO
     {

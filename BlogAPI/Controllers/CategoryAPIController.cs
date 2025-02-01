@@ -1,5 +1,5 @@
 ﻿using BlogAPI.Models;
-using BlogAPI.Models.Dto.Category;
+using BlogAPI.Models.Dto;
 using BlogAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -55,7 +55,7 @@ namespace BlogAPI.Controllers
 
 
         [HttpGet("{id:int}", Name = "GetCategory")]
-        public async Task<ActionResult<APIResponse>> GetGategory(int id)
+        public async Task<ActionResult<APIResponse>> GetCategory(int id)
         {
             if (id == 0)
             {

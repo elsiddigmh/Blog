@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.Models.Dto.User
+namespace BlogAPI.Models.Dto
 {
     public class UserCreateDTO
     {

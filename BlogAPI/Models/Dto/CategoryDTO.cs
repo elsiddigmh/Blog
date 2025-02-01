@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.Models.Dto.Category
+namespace BlogAPI.Models.Dto
 {
     public class CategoryDTO
     {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BlogAPI.Models;
-using BlogAPI.Models.Dto.User;
+using BlogAPI.Models.Dto;
 using BlogAPI.Repository;
 using BlogAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
