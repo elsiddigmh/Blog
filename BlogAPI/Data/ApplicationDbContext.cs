@@ -21,35 +21,41 @@ namespace BlogAPI.Data
                 {
                     Id = 1,
                     Name = "Tech",
-                    Slug = "tech"
+                    Slug = "tech",
+                    CreatedAt = new DateTime(2025, 1, 1)
                 },
                 new Category
                 {
                     Id = 2,
                     Name = "News",
-                    Slug = "news"
+                    Slug = "news",
+                    CreatedAt = new DateTime(2025, 1, 1)
+
                 },
                 new Category
                 {
                     Id = 3,
                     Name = "Sports",
-                    Slug = "sports"
+                    Slug = "sports",
+                    CreatedAt = new DateTime(2025, 1, 1)
                 },
                 new Category
                 {
                     Id = 4,
                     Name = "Economy",
-                    Slug = "economy"
+                    Slug = "economy",
+                    CreatedAt = new DateTime(2025, 1, 1)
                 },
                 new Category
                 {
                     Id = 5,
                     Name = "Politics",
-                    Slug = "politics"
-                    
+                    Slug = "politics",
+                    CreatedAt = new DateTime(2025, 1, 1)
+
                 }
 
-                
+
             );
         }
 

@@ -14,6 +14,7 @@ namespace BlogAPI.Models
         public string HashPassword { get; set; }
         public string Role { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
 
         // Relationships
         public ICollection<Post> Posts { get; set; } // One-to-Many

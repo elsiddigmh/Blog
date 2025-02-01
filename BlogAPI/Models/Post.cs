@@ -17,9 +17,11 @@ namespace BlogAPI.Models
 
 
         // Relationships
+        [Required]
         public int AuthorId { get; set; }
         public User Author { get; set; } // Navigation Property
 
+        [Required]
         public int CategoryId { get; set; }
         public Category Category { get; set; } // Navigation Property
 

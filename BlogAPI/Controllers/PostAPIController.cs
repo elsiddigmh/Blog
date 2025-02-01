@@ -43,7 +43,7 @@ namespace BlogAPI.Controllers
         [HttpGet("{id:int}", Name = "GetPost")]
         public async Task<ActionResult<APIResponse>> GetPost(int id)
         {
-            var post = await _postRepository.GetAsync(u=>u.Id == id);
+            var post = await _postRepository.GetAsync(u => u.Id == id);
             if (post == null)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
@@ -68,7 +68,27 @@ namespace BlogAPI.Controllers
 
         }
 
+        [HttpPost(Name = "CreatePost")]
+        public async Task<ActionResult<APIResponse>> CreatePost([FromBody] PostCreateDTO postDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add(ModelState.ToString());
+                return BadRequest(_response);
+            }
 
+            Post post = _mapper.Map<Post>(postDTO);
+            post.Slug = Helpers.Helpers.GenerateSlug(post.Title);
+            await _postRepository.CreateAsync(post);
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = _mapper.Map<PostDTO>(post);
+
+            return Ok(_response);
+
+        }
 
 
     }
