@@ -21,8 +21,10 @@ builder.Services.AddSwaggerGen();
 //Mapping
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
+// Add Repositories to Dependency Injection
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 

@@ -63,7 +63,7 @@ namespace BlogAPI.Controllers
 
             _response.StatusCode = HttpStatusCode.OK;
             _response.IsSuccess = true;
-            _response.Result = post;
+            _response.Result = postDTO;
             return Ok(_response);
 
         }
