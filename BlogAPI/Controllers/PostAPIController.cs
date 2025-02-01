@@ -90,6 +90,64 @@ namespace BlogAPI.Controllers
 
         }
 
+        [HttpPut("{id:int}", Name = "UpdatePost")]
+        public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromBody] PostUpdateDTO postDTO)
+        {
+            if (id == 0 || postDTO == null)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Can't send empty data");
+                return BadRequest(_response);
+            }
 
+            bool isFoundPost = await _postRepository.GetAsync(u => u.Id == id) != null;
+
+            if (!isFoundPost)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Post not found");
+                return BadRequest(_response);
+            }
+
+            Post post = _mapper.Map<Post>(postDTO);
+            post.Slug = Helpers.Helpers.GenerateSlug(post.Title);
+            await _postRepository.UpdateAsync(post);
+
+            _response.StatusCode = HttpStatusCode.NoContent;
+            _response.IsSuccess = true;
+
+            return Ok(_response);
+
+        }
+
+        [HttpDelete("{id:int}", Name = "DeletePost")]
+        public async Task<ActionResult<APIResponse>> DeletePost(int id)
+        {
+            if (id == 0)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Invalid Id value");
+                return BadRequest(_response);
+            }
+
+            Post post = await _postRepository.GetAsync(u => u.Id == id);
+            if (post == null)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Post not found");
+                return BadRequest(_response);
+            }
+
+            await _postRepository.RemoveAsync(post);
+            _response.StatusCode = HttpStatusCode.NoContent;
+            _response.IsSuccess = true;
+            return Ok(_response);
+
+
+        }
     }
 }
