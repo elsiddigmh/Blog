@@ -28,7 +28,7 @@ namespace BlogAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetComments()
         {
-            var comments = await _commentRepository.GetAllAsync();
+            var comments = await _commentRepository.GetAllAsync(includeProperties: ["User", "Post"]);
 
             if (comments == null)
             {
@@ -49,6 +49,7 @@ namespace BlogAPI.Controllers
 
         [HttpGet("{id:int}", Name = "GetComment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetComment(int id)
@@ -60,7 +61,18 @@ namespace BlogAPI.Controllers
                 _response.ErrorMessages.Add($"Invalid id {id} value");
                 return BadRequest(_response);
             }
-            var comment = await _commentRepository.GetAsync(u => u.Id == id);
+
+            bool isCommentFound = await _commentRepository.GetAsync(u=>u.Id == id) != null;
+
+            if (!isCommentFound)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add($"Comment with id {id} not found");
+                return NotFound(_response);
+            }
+
+            var comment = await _commentRepository.GetAsync(u => u.Id == id, includeProperties: ["User", "Post"]);
             CommentDTO CommentDTO = _mapper.Map<CommentDTO>(comment);
             _response.StatusCode = HttpStatusCode.OK;
             _response.Result = CommentDTO;

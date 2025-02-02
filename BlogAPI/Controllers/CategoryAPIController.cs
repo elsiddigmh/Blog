@@ -26,7 +26,7 @@ namespace BlogAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetCategories()
         {
-            var categories = await _categoryRepository.GetAllAsync();
+            var categories = await _categoryRepository.GetAllAsync(includeProperties: ["Posts"]);
 
             if (categories == null)
             {
@@ -81,7 +81,7 @@ namespace BlogAPI.Controllers
                 return NotFound(_response);
             }
 
-            var category = await _categoryRepository.GetAsync(u => u.Id == id);
+            var category = await _categoryRepository.GetAsync(u => u.Id == id, includeProperties: ["Posts"]);
 
             //Manuel Mapping
             CategoryDTO categoryDTO = new CategoryDTO

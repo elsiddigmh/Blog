@@ -28,7 +28,7 @@ namespace BlogAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetPosts()
         {
-            var posts = await _postRepository.GetAllAsync();
+            var posts = await _postRepository.GetAllAsync(includeProperties: ["Author", "Category"]);
             if (posts == null || posts.Count == 0)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
@@ -38,7 +38,7 @@ namespace BlogAPI.Controllers
             }
             _response.StatusCode = HttpStatusCode.OK;
             _response.IsSuccess = true;
-            _response.Result = posts;
+            _response.Result = _mapper.Map<List<PostDTO>>(posts);
             return _response;
 
         }
@@ -50,7 +50,7 @@ namespace BlogAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetPost(int id)
         {
-            var post = await _postRepository.GetAsync(u => u.Id == id);
+            var post = await _postRepository.GetAsync(u => u.Id == id, includeProperties: ["Author", "Category"]);
             if (post == null)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;

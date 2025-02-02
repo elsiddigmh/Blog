@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace BlogAPI.Models
 {
@@ -18,11 +20,15 @@ namespace BlogAPI.Models
 
         // Relationships
         [Required]
+        [ForeignKey("Author")]
         public int AuthorId { get; set; }
+        [JsonIgnore]
         public User Author { get; set; } // Navigation Property
 
         [Required]
+        [ForeignKey("Category")]
         public int CategoryId { get; set; }
+        [JsonIgnore]
         public Category Category { get; set; } // Navigation Property
 
         public ICollection<Comment> Comments { get; set; } // One-to-Many

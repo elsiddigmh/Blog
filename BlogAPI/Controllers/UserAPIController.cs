@@ -31,7 +31,7 @@ namespace BlogAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task <ActionResult<APIResponse>> GetUser(int id)
         {
-            var user = await _userRepository.GetAsync(u => u.Id == id);
+            var user = await _userRepository.GetAsync(u => u.Id == id, includeProperties: ["Comments", "Posts"]);
             if (user == null)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
@@ -54,7 +54,7 @@ namespace BlogAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetUsers()
         {
-            var users = await _userRepository.GetAllAsync();
+            var users = await _userRepository.GetAllAsync(includeProperties: ["Comments", "Posts"]);
             if (users == null || users.Count == 0)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
