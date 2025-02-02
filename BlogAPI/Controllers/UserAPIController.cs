@@ -32,7 +32,7 @@ namespace BlogAPI.Controllers
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Invalid user Id value");
+                _response.ErrorMessages.Add($"Invalid user Id {id} value");
                 return NotFound(_response);
             }
             UserDTO userDTO = _mapper.Map<UserDTO>(user);
@@ -94,7 +94,7 @@ namespace BlogAPI.Controllers
         [HttpPut("{id:int}", Name = "UpdateUser")]
         public async Task<ActionResult<APIResponse>> UpdateUser([FromBody] UserUpdateDTO userDTO, int id)
         {
-            if (id == 0 || userDTO == null)
+            if (id <= 0 || userDTO == null)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
@@ -124,11 +124,11 @@ namespace BlogAPI.Controllers
         [HttpDelete("{id:int}", Name = "DeleteUser")]
         public async Task<ActionResult<APIResponse>> DeleteUser(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Invalid Id value");
+                _response.ErrorMessages.Add($"Invalid id {id} value");
                 return BadRequest(_response);
             }
 

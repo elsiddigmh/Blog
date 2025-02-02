@@ -48,7 +48,7 @@ namespace BlogAPI.Controllers
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("There's no post whith this id");
+                _response.ErrorMessages.Add($"Invalid id {id} value");
                 return NotFound(_response);
             }
 
@@ -93,7 +93,7 @@ namespace BlogAPI.Controllers
         [HttpPut("{id:int}", Name = "UpdatePost")]
         public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromBody] PostUpdateDTO postDTO)
         {
-            if (id == 0 || postDTO == null)
+            if (id <= 0 || postDTO == null)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
@@ -125,11 +125,11 @@ namespace BlogAPI.Controllers
         [HttpDelete("{id:int}", Name = "DeletePost")]
         public async Task<ActionResult<APIResponse>> DeletePost(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Invalid Id value");
+                _response.ErrorMessages.Add($"Invalid id {id} value");
                 return BadRequest(_response);
             }
 

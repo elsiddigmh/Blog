@@ -57,14 +57,26 @@ namespace BlogAPI.Controllers
         [HttpGet("{id:int}", Name = "GetCategory")]
         public async Task<ActionResult<APIResponse>> GetCategory(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Invalid id value");
+                _response.ErrorMessages.Add($"Invalid id {id} value");
                 return BadRequest(_response);
             }
+            bool isCategoryFound = await _categoryRepository.GetAsync(u => u.Id == id) != null;
+
+            if (!isCategoryFound)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add($"Category with id {id} not found");
+                return NotFound(_response);
+            }
+
             var category = await _categoryRepository.GetAsync(u => u.Id == id);
+
+            //Manuel Mapping
             CategoryDTO categoryDTO = new CategoryDTO
             {
                 Id = category.Id,
@@ -110,7 +122,7 @@ namespace BlogAPI.Controllers
         [HttpPut("{id:int}", Name = "UpdateCategory")]
         public async Task<ActionResult<APIResponse>> UpdateCategory([FromBody] CategoryUpdateDTO updateDTO, int id)
         {
-            if (updateDTO == null || id == 0)
+            if (updateDTO == null || id <= 0)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
@@ -141,11 +153,11 @@ namespace BlogAPI.Controllers
         [HttpDelete("{id:int}", Name = "DeleteCategory")]
         public async Task<ActionResult<APIResponse>> DeleteCategory(int id)
         {
-            if(id == 0)
+            if(id <= 0)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Invalid id value");
+                _response.ErrorMessages.Add($"Invalid id {id} value");
                 return BadRequest(_response);
             }
 

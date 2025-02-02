@@ -47,11 +47,11 @@ namespace BlogAPI.Controllers
         [HttpGet("{id:int}", Name = "GetComment")]
         public async Task<ActionResult<APIResponse>> GetComment(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Invalid id value");
+                _response.ErrorMessages.Add($"Invalid id {id} value");
                 return BadRequest(_response);
             }
             var comment = await _commentRepository.GetAsync(u => u.Id == id);
@@ -85,7 +85,7 @@ namespace BlogAPI.Controllers
         [HttpPut("{id:int}", Name = "UpdateComment")]
         public async Task<ActionResult<APIResponse>> UpdateComment([FromBody] CommentUpdateDTO updateDTO, int id)
         {
-            if (updateDTO == null || id == 0)
+            if (updateDTO == null || id <= 0)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
@@ -113,11 +113,11 @@ namespace BlogAPI.Controllers
         [HttpDelete("{id:int}", Name = "DeleteComment")]
         public async Task<ActionResult<APIResponse>> DeleteComment(int id)
         {
-            if(id == 0)
+            if(id <= 0)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Invalid id value");
+                _response.ErrorMessages.Add($"Invalid id {id} value");
                 return BadRequest(_response);
             }
 
