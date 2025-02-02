@@ -23,6 +23,9 @@ namespace BlogAPI.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetComments()
         {
             var comments = await _commentRepository.GetAllAsync();
@@ -40,11 +43,14 @@ namespace BlogAPI.Controllers
             _response.IsSuccess = true;
 
 
-            return Ok(_response);
+            return _response;
         }
 
 
         [HttpGet("{id:int}", Name = "GetComment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetComment(int id)
         {
             if (id <= 0)
@@ -59,10 +65,14 @@ namespace BlogAPI.Controllers
             _response.StatusCode = HttpStatusCode.OK;
             _response.Result = CommentDTO;
             _response.IsSuccess = true;
-            return Ok(_response);
+            return _response;
         }
 
         [HttpPost(Name = "CreateComment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> CreateComment([FromBody] CommentCreateDTO createDTO)
         {
 
@@ -83,6 +93,11 @@ namespace BlogAPI.Controllers
 
 
         [HttpPut("{id:int}", Name = "UpdateComment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> UpdateComment([FromBody] CommentUpdateDTO updateDTO, int id)
         {
             if (updateDTO == null || id <= 0)
@@ -104,13 +119,17 @@ namespace BlogAPI.Controllers
             Comment comment = _mapper.Map<Comment>(updateDTO);
             CommentDTO commentDTO = _mapper.Map<CommentDTO>(comment);
             await _commentRepository.UpdateAsync(comment);
-            _response.StatusCode = HttpStatusCode.Created;
+            _response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess = true;
             _response.Result = commentDTO;
-            return Ok(_response);
+            return _response;
         }
 
         [HttpDelete("{id:int}", Name = "DeleteComment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> DeleteComment(int id)
         {
             if(id <= 0)
@@ -125,7 +144,7 @@ namespace BlogAPI.Controllers
             await _commentRepository.RemoveAsync(comment);
             _response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess = true;
-            return Ok(_response);
+            return _response;
 
 
         }
