@@ -10,7 +10,6 @@ namespace BlogAPI.Models
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
 
-
         // Relationships
         [Required]
         public int PostId { get; set; }
