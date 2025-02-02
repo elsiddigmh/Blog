@@ -24,7 +24,11 @@ namespace BlogAPI.Controllers
             _response = new APIResponse();
         }
 
+
         [HttpGet("{id:int}", Name = "GetUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task <ActionResult<APIResponse>> GetUser(int id)
         {
             var user = await _userRepository.GetAsync(u => u.Id == id);
@@ -40,10 +44,14 @@ namespace BlogAPI.Controllers
             _response.StatusCode = HttpStatusCode.OK;
             _response.IsSuccess = true;
             _response.Result = userDTO;
-            return Ok(_response);
+            return _response;
         }
 
+
         [HttpGet(Name = "GetUsers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetUsers()
         {
             var users = await _userRepository.GetAllAsync();
@@ -58,10 +66,14 @@ namespace BlogAPI.Controllers
             _response.StatusCode = HttpStatusCode.OK;
             _response.IsSuccess = true;
             _response.Result = usersDTO;
-            return Ok(_response);
+            return _response;
         }
 
+
         [HttpPost(Name = "CreateUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> CreateUser([FromBody]UserCreateDTO userDTO)
         {
 
@@ -88,10 +100,15 @@ namespace BlogAPI.Controllers
             _response.IsSuccess = true;
             _response.Result = _mapper.Map<UserDTO>(user);
 
-            return Ok(_response);
+            return _response;
         }
 
+
         [HttpPut("{id:int}", Name = "UpdateUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> UpdateUser([FromBody] UserUpdateDTO userDTO, int id)
         {
             if (id <= 0 || userDTO == null)
@@ -106,10 +123,10 @@ namespace BlogAPI.Controllers
 
             if (!isFoundUser)
             {
-                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.StatusCode = HttpStatusCode.NotFound;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("User not found");
-                return BadRequest(_response);
+                _response.ErrorMessages.Add($"User with Id {id} not found");
+                return NotFound(_response);
             }
 
             User user = _mapper.Map<User>(userDTO);
@@ -117,11 +134,15 @@ namespace BlogAPI.Controllers
             _response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess = true;
 
-            return Ok(_response);
+            return _response;
         }
 
 
         [HttpDelete("{id:int}", Name = "DeleteUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> DeleteUser(int id)
         {
             if (id <= 0)
@@ -137,14 +158,14 @@ namespace BlogAPI.Controllers
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("User not found");
+                _response.ErrorMessages.Add($"User with Id {id} not found");
                 return BadRequest(_response);
             }
 
             await _userRepository.RemoveAsync(user);
             _response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess = true;
-            return Ok(_response);
+            return _response;
         }
 
     }
