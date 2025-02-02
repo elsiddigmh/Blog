@@ -21,6 +21,9 @@ namespace BlogAPI.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetCategories()
         {
             var categories = await _categoryRepository.GetAllAsync();
@@ -50,11 +53,15 @@ namespace BlogAPI.Controllers
             _response.IsSuccess = true;
 
 
-            return Ok(_response);
+            return _response;
         }
 
 
         [HttpGet("{id:int}", Name = "GetCategory")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetCategory(int id)
         {
             if (id <= 0)
@@ -87,10 +94,13 @@ namespace BlogAPI.Controllers
             _response.StatusCode = HttpStatusCode.OK;
             _response.Result = categoryDTO;
             _response.IsSuccess = true;
-            return Ok(_response);
+            return _response;
         }
 
         [HttpPost(Name = "CreateCategory")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> CreateCategory([FromBody] CategoryCreateDTO createDTO)
         {
             bool isNameFound = await _categoryRepository.GetAsync(u => u.Name == createDTO.Name) != null;
@@ -120,6 +130,11 @@ namespace BlogAPI.Controllers
 
 
         [HttpPut("{id:int}", Name = "UpdateCategory")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> UpdateCategory([FromBody] CategoryUpdateDTO updateDTO, int id)
         {
             if (updateDTO == null || id <= 0)
@@ -144,12 +159,17 @@ namespace BlogAPI.Controllers
                 Slug = Helpers.Helpers.GenerateSlug(updateDTO.Name)
             };
             await _categoryRepository.UpdateAsync(category);
-            _response.StatusCode = HttpStatusCode.Created;
+            _response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess = true;
             _response.Result = category;
-            return Ok(_response);
+
+            return _response;
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{id:int}", Name = "DeleteCategory")]
         public async Task<ActionResult<APIResponse>> DeleteCategory(int id)
         {
@@ -165,9 +185,7 @@ namespace BlogAPI.Controllers
             await _categoryRepository.RemoveAsync(category);
             _response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess = true;
-            return Ok(_response);
-
-
+            return _response;
         }
     }
 }
