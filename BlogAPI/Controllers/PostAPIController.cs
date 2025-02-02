@@ -23,6 +23,9 @@ namespace BlogAPI.Controllers
 
 
         [HttpGet(Name = "GetPosts")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetPosts()
         {
             var posts = await _postRepository.GetAllAsync();
@@ -36,11 +39,15 @@ namespace BlogAPI.Controllers
             _response.StatusCode = HttpStatusCode.OK;
             _response.IsSuccess = true;
             _response.Result = posts;
-            return Ok(_response);
+            return _response;
 
         }
 
+
         [HttpGet("{id:int}", Name = "GetPost")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> GetPost(int id)
         {
             var post = await _postRepository.GetAsync(u => u.Id == id);
@@ -48,7 +55,7 @@ namespace BlogAPI.Controllers
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add($"Invalid id {id} value");
+                _response.ErrorMessages.Add($"Post not found with Id {id} value");
                 return NotFound(_response);
             }
 
@@ -64,11 +71,15 @@ namespace BlogAPI.Controllers
             _response.StatusCode = HttpStatusCode.OK;
             _response.IsSuccess = true;
             _response.Result = postDTO;
-            return Ok(_response);
+            return _response;
 
         }
 
         [HttpPost(Name = "CreatePost")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> CreatePost([FromBody] PostCreateDTO postDTO)
         {
             if (!ModelState.IsValid)
@@ -82,15 +93,20 @@ namespace BlogAPI.Controllers
             Post post = _mapper.Map<Post>(postDTO);
             post.Slug = Helpers.Helpers.GenerateSlug(post.Title);
             await _postRepository.CreateAsync(post);
-            _response.StatusCode = HttpStatusCode.OK;
+            _response.StatusCode = HttpStatusCode.Created;
             _response.IsSuccess = true;
             _response.Result = _mapper.Map<PostDTO>(post);
 
-            return Ok(_response);
+            return _response;
 
         }
 
         [HttpPut("{id:int}", Name = "UpdatePost")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromBody] PostUpdateDTO postDTO)
         {
             if (id <= 0 || postDTO == null)
@@ -107,8 +123,8 @@ namespace BlogAPI.Controllers
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Post not found");
-                return BadRequest(_response);
+                _response.ErrorMessages.Add($"Post with Id {id} not found ");
+                return NotFound(_response);
             }
 
             Post post = _mapper.Map<Post>(postDTO);
@@ -118,11 +134,15 @@ namespace BlogAPI.Controllers
             _response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess = true;
 
-            return Ok(_response);
+            return _response;
 
         }
 
         [HttpDelete("{id:int}", Name = "DeletePost")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> DeletePost(int id)
         {
             if (id <= 0)
@@ -138,14 +158,14 @@ namespace BlogAPI.Controllers
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Post not found");
+                _response.ErrorMessages.Add($"Post with Id {id} not found");
                 return BadRequest(_response);
             }
 
             await _postRepository.RemoveAsync(post);
             _response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess = true;
-            return Ok(_response);
+            return _response;
 
 
         }
