@@ -20,16 +20,16 @@ namespace BlogAPI.Repository
             _secretKey = configuration.GetValue<string>("ApiSettings:Secret");
         }
 
-        public bool IsUiniqueUser(string username)
-        {
-            var user = _context.Users.FirstOrDefault(u => u.UserName == username);
+        //public bool IsUiniqueUser(string username)
+        //{
+        //    var user = _context.Users.FirstOrDefault(u => u.UserName == username);
 
-            if (user == null) {
-                return true;
-            }
+        //    if (user == null) {
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {

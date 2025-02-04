@@ -5,7 +5,7 @@ namespace BlogAPI.Repository.IRepository
 {
     public interface IUserRepository : IRepository<User>
     {
-        public bool IsUiniqueUser(string  username);
+        //public bool IsUiniqueUser(string  username);
         public Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
         Task<User> UpdateAsync(User entity);
     }

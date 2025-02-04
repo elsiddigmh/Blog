@@ -2,6 +2,7 @@
 using BlogAPI.Models;
 using BlogAPI.Models.Dto;
 using BlogAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -80,9 +81,12 @@ namespace BlogAPI.Controllers
             return _response;
         }
 
+
         [HttpPost(Name = "CreateComment")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> CreateComment([FromBody] CommentCreateDTO createDTO)
@@ -105,8 +109,10 @@ namespace BlogAPI.Controllers
 
 
         [HttpPut("{id:int}", Name = "UpdateComment")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -137,9 +143,12 @@ namespace BlogAPI.Controllers
             return _response;
         }
 
+
         [HttpDelete("{id:int}", Name = "DeleteComment")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> DeleteComment(int id)

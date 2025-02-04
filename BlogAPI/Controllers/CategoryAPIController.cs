@@ -1,6 +1,7 @@
 ﻿using BlogAPI.Models;
 using BlogAPI.Models.Dto;
 using BlogAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -98,8 +99,10 @@ namespace BlogAPI.Controllers
         }
 
         [HttpPost(Name = "CreateCategory")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> CreateCategory([FromBody] CategoryCreateDTO createDTO)
         {
@@ -130,9 +133,11 @@ namespace BlogAPI.Controllers
 
 
         [HttpPut("{id:int}", Name = "UpdateCategory")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> UpdateCategory([FromBody] CategoryUpdateDTO updateDTO, int id)
@@ -166,9 +171,11 @@ namespace BlogAPI.Controllers
             return _response;
         }
 
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{id:int}", Name = "DeleteCategory")]
         public async Task<ActionResult<APIResponse>> DeleteCategory(int id)

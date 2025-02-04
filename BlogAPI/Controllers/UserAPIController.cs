@@ -3,6 +3,7 @@ using BlogAPI.Models;
 using BlogAPI.Models.Dto;
 using BlogAPI.Repository;
 using BlogAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using System.Net;
@@ -11,6 +12,7 @@ namespace BlogAPI.Controllers
 {
     [ApiController]
     [Route("api/UserAPI")]
+    [Authorize(Roles = "admin")]
     public class UserAPIController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -23,7 +25,6 @@ namespace BlogAPI.Controllers
             _mapper = mapper;
             _response = new APIResponse();
         }
-
 
         [HttpGet("{id:int}", Name = "GetUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
