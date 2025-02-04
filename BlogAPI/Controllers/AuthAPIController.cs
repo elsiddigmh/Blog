@@ -9,7 +9,6 @@ using System.Net;
 namespace BlogAPI.Controllers
 {
 
-
     [ApiController]
     [Route("api/AuthAPI")]
     public class AuthAPIController : Controller
