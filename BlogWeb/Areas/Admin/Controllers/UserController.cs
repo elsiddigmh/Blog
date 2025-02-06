@@ -21,7 +21,7 @@ namespace BlogWeb.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<UserDTO> list = new ();
+            List<UserDTO> list = new();
             var response = await _userService.GetAllAsync<APIResponse>();
             if (response == null && response.IsSuccess == false)
             {
@@ -31,5 +31,34 @@ namespace BlogWeb.Areas.Admin.Controllers
             list = JsonConvert.DeserializeObject<List<UserDTO>>(Convert.ToString(response.Result));
             return View(list);
         }
+
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var response = await _userService.GetAsync<APIResponse>(id);
+            if (response == null && response.IsSuccess == false)
+            {
+                NotFound();
+            }
+            UserDTO userDto = JsonConvert.DeserializeObject<UserDTO>(Convert.ToString(response.Result));
+            return View(userDto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(UserDTO userDTO)
+        {
+            var response = await _userService.DeleteAsync<APIResponse>(userDTO.Id);
+
+            if (response == null && response.IsSuccess == false)
+            {
+                TempData["error"] = "Something went wrong!";
+                return View(userDTO);
+            }
+            TempData["success"] = "User deleted successfully";
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
     }
 }

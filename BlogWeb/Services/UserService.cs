@@ -30,7 +30,7 @@ namespace BlogWeb.Services
             return SendAsync<T>(new APIRequest
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = _appUrl + "/api/userAPI" + id
+                Url = _appUrl + "/api/userAPI/" + id
             });
         }
 
@@ -48,7 +48,7 @@ namespace BlogWeb.Services
             return SendAsync<T>(new APIRequest
             {
                 ApiType = SD.ApiType.GET,
-                Url = _appUrl + "/api/userAPI" + id
+                Url = _appUrl + "/api/userAPI/" + id
             });
         }
 
@@ -58,7 +58,7 @@ namespace BlogWeb.Services
             {
                 ApiType = SD.ApiType.PUT,
                 Data = userDTO,
-                Url = _appUrl + "/api/userAPI" + userDTO.Id
+                Url = _appUrl + "/api/userAPI/" + userDTO.Id
             });
         }
     }
