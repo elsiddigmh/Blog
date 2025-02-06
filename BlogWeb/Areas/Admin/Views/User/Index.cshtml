@@ -1,10 +1,14 @@
 ﻿@using BlogWeb.Models.Dto
 @model List<UserDTO>
 
-
 <div class="card">
-	<div class="card-header">
-		<div class="card-title">Users Management</div>
+	<div class="card-header row">
+		<div class="col text-start">
+			<div class="card-title">Users Management</div>
+		</div>
+		<div class="col-auto">
+			<a asp-controller="User" asp-action="Create" class="btn btn-success">Create User</a>
+		</div>
 	</div>
 	<div class="card-body">
 		@if(Model != null && Model.Count != 0){

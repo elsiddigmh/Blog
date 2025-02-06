@@ -19,6 +19,11 @@ namespace BlogWeb.Areas.Admin.Controllers
             _mapper = mapper;
         }
 
+        public async Task<IActionResult> Create()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> Index()
         {
             List<UserDTO> list = new();
