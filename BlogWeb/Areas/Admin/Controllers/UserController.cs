@@ -25,7 +25,6 @@ namespace BlogWeb.Areas.Admin.Controllers
             var response = await _userService.GetAllAsync<APIResponse>();
             if (response == null && response.IsSuccess == false)
             {
-                TempData["error"] = "There's no users";
                 return View();
             }
             list = JsonConvert.DeserializeObject<List<UserDTO>>(Convert.ToString(response.Result));
