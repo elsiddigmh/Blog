@@ -5,6 +5,7 @@ namespace BlogAPI.Models.Dto
 {
     public class UserDTO
     {
+        public int Id { get; set; }
         [Required]
         [MaxLength(20)]
         public string UserName { get; set; }
