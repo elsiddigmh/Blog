@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\User\**" />
+    <Compile Remove="wwwroot\client\**" />
+    <Content Remove="Areas\User\**" />
+    <Content Remove="wwwroot\client\**" />
+    <EmbeddedResource Remove="Areas\User\**" />
+    <EmbeddedResource Remove="wwwroot\client\**" />
+    <None Remove="Areas\User\**" />
+    <None Remove="wwwroot\client\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -17,9 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\User\Controllers\" />
-    <Folder Include="Areas\User\Views\" />
-    <Folder Include="wwwroot\client\" />
+    <None Include="wwwroot\theme\css\style.css.map" />
+    <None Include="wwwroot\theme\js\script.js" />
+    <None Include="wwwroot\theme\plugins\bootstrap\bootstrap.min.js" />
+    <None Include="wwwroot\theme\plugins\jquery\jquery.min.js" />
   </ItemGroup>
 
 </Project>
