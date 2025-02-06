@@ -1,4 +1,6 @@
 using BlogWeb;
+using BlogWeb.Services;
+using BlogWeb.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +9,10 @@ builder.Services.AddControllersWithViews();
 
 // Mapping
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+
+//Services
+builder.Services.AddHttpClient<IUserService, UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

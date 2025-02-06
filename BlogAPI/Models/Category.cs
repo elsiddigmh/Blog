@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlogAPI.Models
 {
@@ -12,7 +13,8 @@ namespace BlogAPI.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        // Relationships
-        public ICollection<Post> Posts { get; set; } // One-to-Many
+		// Relationships
+		[JsonIgnore]
+		public ICollection<Post> Posts { get; set; } // One-to-Many
     }
 }

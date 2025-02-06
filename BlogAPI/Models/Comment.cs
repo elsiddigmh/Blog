@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlogAPI.Models
 {
@@ -12,12 +13,14 @@ namespace BlogAPI.Models
 
         // Relationships
         [Required]
-        public int PostId { get; set; }
-        [JsonIgnore]
-        public Post Post { get; set; } // Navigation Property
+		[ForeignKey("Post")]
+		public int PostId { get; set; }
+		[JsonIgnore]
+		public Post Post { get; set; } // Navigation Property
         [Required]
-        public int UserId { get; set; }
-        [JsonIgnore]
-        public User User { get; set; } // Navigation Property
+		[ForeignKey("User")]
+		public int UserId { get; set; }
+		[JsonIgnore]
+		public User User { get; set; } // Navigation Property
     }
 }

@@ -12,7 +12,7 @@ namespace BlogAPI.Controllers
 {
     [ApiController]
     [Route("api/UserAPI")]
-    [Authorize(Roles = "admin")]
+    //[Authorize(Roles = "admin")]
     public class UserAPIController : Controller
     {
         private readonly IUserRepository _userRepository;

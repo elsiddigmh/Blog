@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BlogAPI.Models.Dto
 {
@@ -15,9 +16,11 @@ namespace BlogAPI.Models.Dto
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        // Relationships
-        public ICollection<Post> Posts { get; set; } // One-to-Many
-        public ICollection<Comment> Comments { get; set; } // One-to-Many
+		// Relationships
+		[JsonIgnore]
+		public ICollection<Post> Posts { get; set; } // One-to-Many
+		[JsonIgnore]
+		public ICollection<Comment> Comments { get; set; } // One-to-Many
     }
 
 }
