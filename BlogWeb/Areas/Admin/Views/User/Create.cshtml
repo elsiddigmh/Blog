@@ -1,22 +1,29 @@
-﻿@model BlogWeb.Models.Dto.UserDTO;
+﻿@model BlogWeb.Models.VM.UserCreateVM;
 
 <div class="card">
 	<div class="card-header">
 		<div class="card-title">Delete User</div>
 	</div>
-	<form method="post" class="form-control">
+	<form method="post" asp-controller="User" asp-action="Create" class="form-control">
 		<div class="card-body">
 			<div class="form-group">
-				<label asp-for="UserName"></label>
-				<input type="text" asp-for="UserName"  class="form-control form-control" id="Username" placeholder="Username.. ">
+				<label asp-for="UserDTO.UserName"></label>
+				<input type="text" asp-for="UserDTO.UserName" class="form-control form-control" id="Username" placeholder="Username.. ">
 			</div>
 			<div class="form-group">
-				<label asp-for="Email"></label>
-				<input type="text" asp-for="Email"  class="form-control form-control" id="Email" placeholder="Email.. ">
+				<label asp-for="UserDTO.Email"></label>
+				<input type="text" asp-for="UserDTO.Email" class="form-control form-control" id="Email" placeholder="Email.. ">
 			</div>
 			<div class="form-group">
-				<label asp-for="Role"></label>
-				<input type="text" asp-for="Role" class=" form-control form-control" id="Role" placeholder="Role.. ">
+				<label asp-for="UserDTO.Email"></label>
+				<input type="password" asp-for="UserDTO.HashPassword" class="form-control form-control" id="Email" placeholder="Password.. ">
+			</div>
+			<div class="form-group">
+				<label asp-for="UserDTO.Role"></label>
+				<select asp-for="UserDTO.Role" asp-items="@Model.Roles" class="form-select">
+					<option disabled selected>-- Select Role --</option>
+				</select>
+				@* <input type="text" asp-for="UserDTO.Role" class=" form-control form-control" id="Role" placeholder="Role.. "> *@
 			</div>
 		</div>
 		<div class="card-action">

@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using BlogUtility;
 using BlogWeb.Models;
 using BlogWeb.Models.Dto;
+using BlogWeb.Models.VM;
 using BlogWeb.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace BlogWeb.Areas.Admin.Controllers
 {
@@ -21,10 +25,39 @@ namespace BlogWeb.Areas.Admin.Controllers
 
         public async Task<IActionResult> Create()
         {
-            return View();
+			UserCreateVM userCreateVM = new UserCreateVM
+			{
+				Roles = new List<SelectListItem>
+				{
+					new SelectListItem {Text = Roles.Admin, Value = Roles.Admin.ToLower()},
+					new SelectListItem {Text = Roles.Author, Value = Roles.Author.ToLower()},
+				}
+			};
+			return View(userCreateVM);
         }
 
-        public async Task<IActionResult> Index()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(UserCreateDTO userDTO)
+        {
+            if (ModelState.IsValid)
+            {
+
+				var response = await _userService.CreateAsync<APIResponse>(userDTO);
+				if (response != null && response.IsSuccess)
+				{
+					TempData["success"] = "Villa created successfully";
+					return RedirectToAction(nameof(Index));
+				}
+			}
+
+			TempData["error"] = "Something went wrong!";
+			return View(userDTO);
+
+
+		}
+
+		public async Task<IActionResult> Index()
         {
             List<UserDTO> list = new();
             var response = await _userService.GetAllAsync<APIResponse>();
