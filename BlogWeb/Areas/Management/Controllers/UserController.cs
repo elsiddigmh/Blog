@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace BlogWeb.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Management")]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
