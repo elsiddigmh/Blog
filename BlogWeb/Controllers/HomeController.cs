@@ -36,5 +36,41 @@ namespace BlogWeb.Controllers
 		}
 
 
-	}
+		[HttpGet]
+		[Route("Contact")]
+		public IActionResult Contact()
+		{
+			return View();
+		}
+
+		[HttpGet]
+		[Route("About")]
+		public IActionResult About()
+		{
+			return View();
+		}
+
+		[HttpGet]
+        [Route("PrivacyPolicy")]
+        public IActionResult PrivacyPolicy()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Route("TermsConditions")]
+        public IActionResult TermsConditions()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Route("Page404")]
+        public IActionResult Page404()
+        {
+            return View();
+        }
+
+
+    }
 }

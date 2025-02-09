@@ -1,0 +1,26 @@
+﻿<div class="col-12">
+	<div class="breadcrumbs mb-4">
+		<a asp-controller="Home" asp-action="Index">Home</a>
+		<span class="mx-1">/</span>  <a asp-controller="Home" asp-action="Contact">Contact</a>
+	</div>
+</div>
+
+<div class="col-lg-6 mt-4 mt-lg-0">
+	<form method="POST" action="#!" class="row">
+		<div class="col-md-6">
+			<input type="text" class="form-control mb-4" placeholder="Name" name="name" id="name">
+		</div>
+		<div class="col-md-6">
+			<input type="email" class="form-control mb-4" placeholder="Email" name="email" id="email">
+		</div>
+		<div class="col-12">
+			<input type="text" class="form-control mb-4" placeholder="Subject" name="subject" id="subject">
+		</div>
+		<div class="col-12">
+			<textarea name="message" id="message" class="form-control mb-4" placeholder="Type You Message Here" rows="5"></textarea>
+		</div>
+		<div class="col-12">
+			<button class="btn btn-outline-primary" type="submit">Send Message</button>
+		</div>
+	</form>
+</div>
