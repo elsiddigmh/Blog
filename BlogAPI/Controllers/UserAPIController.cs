@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BlogAPI.Helpers;
 using BlogAPI.Models;
 using BlogAPI.Models.Dto;
 using BlogAPI.Repository;
@@ -95,6 +96,10 @@ namespace BlogAPI.Controllers
                 _response.ErrorMessages.Add("Username already exists!");
                 return BadRequest(_response);
             }
+
+            PasswordHelper passwordHelper = new PasswordHelper();
+            string hashedPassword = passwordHelper.HashPassword(userDTO.HashPassword);
+            userDTO.HashPassword = hashedPassword;
 
             User user = _mapper.Map<User>(userDTO);
             await _userRepository.CreateAsync(user);

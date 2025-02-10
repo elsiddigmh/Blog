@@ -49,8 +49,7 @@ namespace BlogWeb.Controllers
 					return RedirectToAction(nameof(Login));
 				}
 			}
-
-			TempData["error"] = "Something went wrong!";
+			//TempData["error"] = "Something went wrong!";
 			return View(userDTO);
 
 		}
