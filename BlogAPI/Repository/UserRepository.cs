@@ -1,4 +1,5 @@
 ﻿using BlogAPI.Data;
+using BlogAPI.Helpers;
 using BlogAPI.Models;
 using BlogAPI.Models.Dto;
 using BlogAPI.Repository.IRepository;
@@ -33,9 +34,13 @@ namespace BlogAPI.Repository
 
         public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
-            var user = _context.Users.FirstOrDefault(u=> u.UserName == loginRequestDTO.UserName && u.HashPassword == loginRequestDTO.HashPassword);
+            var passwordHelper = new PasswordHelper();
+            var hashedPassword = passwordHelper.HashPassword(loginRequestDTO.HashPassword);
 
-            if (user == null) {
+            var user = _context.Users.FirstOrDefault(u=> u.UserName == loginRequestDTO.Email);
+            bool isValidPassword = passwordHelper.VerifyPassword(hashedPassword, user.HashPassword);
+
+			if (user == null || !isValidPassword) {
                 return new LoginResponseDTO()
                 {
                     User = null,
