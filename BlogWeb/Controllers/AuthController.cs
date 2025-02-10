@@ -3,6 +3,7 @@ using BlogWeb.Models;
 using BlogWeb.Models.Dto;
 using BlogWeb.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace BlogWeb.Controllers
 {
@@ -27,6 +28,12 @@ namespace BlogWeb.Controllers
 		[Route("Register")]
 		public async Task<IActionResult> Register(UserCreateDTO userDTO)
 		{
+			var chcekEmailResponse = await IsEmailAvailable(userDTO.Email) as JsonResult;
+
+            bool isEmailAvailable = (bool)chcekEmailResponse.Value;
+			if (isEmailAvailable) {
+				ModelState.AddModelError("ErrorMessages", "Email already exists!");
+			}
 			if (ModelState.IsValid)
 			{
 				var response = await _userService.CreateAsync<APIResponse>(userDTO);
@@ -40,6 +47,23 @@ namespace BlogWeb.Controllers
 			return View(userDTO);
 
 		}
+
+		//Unique email check for Remote validation
+	   [HttpGet]
+		public async Task<IActionResult> IsEmailAvailable(string email)
+		{
+			var response = await _userService.GetAllAsync<APIResponse>();
+			var users = JsonConvert.DeserializeObject<List<UserDTO>>(Convert.ToString(response.Result));
+			bool result;
+			foreach (var user in users) {
+				if (user.Email == email) { 
+					result = true;
+                    return Json(result);
+                }
+			}
+			result = false;
+            return Json(result);
+        }
 
 
 
