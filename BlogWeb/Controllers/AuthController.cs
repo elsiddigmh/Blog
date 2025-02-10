@@ -4,7 +4,19 @@ namespace BlogWeb.Controllers
 {
 	public class AuthController : Controller
 	{
-		public IActionResult Index()
+		[HttpGet]
+		[Route("Register")]
+		public IActionResult Register()
+		{
+			return View();
+		}
+
+
+
+
+		[HttpGet]
+		[Route("Login")]
+		public IActionResult Login()
 		{
 			return View();
 		}

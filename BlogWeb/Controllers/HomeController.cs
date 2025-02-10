@@ -18,23 +18,6 @@ namespace BlogWeb.Controllers
             return View();
         }
 
-		[HttpGet]
-		[Route("Register")]
-		public IActionResult Register()
-		{
-			return View();
-		}
-
-
-
-
-		[HttpGet]
-		[Route("Login")]
-		public IActionResult Login()
-		{
-			return View();
-		}
-
 
 		[HttpGet]
 		[Route("Contact")]

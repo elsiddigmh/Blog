@@ -34,8 +34,4 @@
     <None Include="wwwroot\theme\plugins\jquery\jquery.min.js" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Auth\" />
-  </ItemGroup>
-
 </Project>
