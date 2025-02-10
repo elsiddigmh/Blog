@@ -29,11 +29,18 @@ namespace BlogWeb.Controllers
 		public async Task<IActionResult> Register(UserCreateDTO userDTO)
 		{
 			var chcekEmailResponse = await IsEmailAvailable(userDTO.Email) as JsonResult;
-
             bool isEmailAvailable = (bool)chcekEmailResponse.Value;
 			if (isEmailAvailable) {
 				ModelState.AddModelError("Email", "Email already exists!");
 			}
+
+			var chcekUsernameResponse = await IsUsernameAvailable(userDTO.UserName) as JsonResult;
+			bool isUsernameAvailable = (bool)chcekUsernameResponse.Value;
+			if (isUsernameAvailable)
+			{
+				ModelState.AddModelError("UserName", "Username already exists!");
+			}
+
 			if (ModelState.IsValid)
 			{
 				var response = await _userService.CreateAsync<APIResponse>(userDTO);
@@ -64,6 +71,25 @@ namespace BlogWeb.Controllers
 			result = false;
             return Json(result);
         }
+
+		//Unique username check for Remote validation
+		[HttpGet]
+		public async Task<IActionResult> IsUsernameAvailable(string username)
+		{
+			var response = await _userService.GetAllAsync<APIResponse>();
+			var users = JsonConvert.DeserializeObject<List<UserDTO>>(Convert.ToString(response.Result));
+			bool result;
+			foreach (var user in users)
+			{
+				if (user.UserName == username)
+				{
+					result = true;
+					return Json(result);
+				}
+			}
+			result = false;
+			return Json(result);
+		}
 
 
 
