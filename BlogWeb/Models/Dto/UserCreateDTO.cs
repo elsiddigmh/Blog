@@ -12,6 +12,8 @@ namespace BlogWeb.Models.Dto
         [Required]
         [MaxLength(30)]
         public string Email { get; set; }
+        [Required]
+        [MinLength(5)]
         public string HashPassword { get; set; }
         public string Role { get; set; } = "author";
 

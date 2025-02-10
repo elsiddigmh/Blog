@@ -1,7 +1,7 @@
 ﻿@{
 	ViewData["Title"] = "Register";
 }
-@model BlogWeb.Models.Dto.UserDTO;
+@model BlogWeb.Models.Dto.UserCreateDTO;
 
 <div class="col-12">
 	<div class="breadcrumbs mb-4">
@@ -11,17 +11,21 @@
 </div>
 <div class="col-lg-6 mt-4 mt-lg-0">
 	<form method="post" asp-controller="Auth" asp-action="Register" class="row">
+		@* <div asp-validation-summary="All" class="text-danger"></div> *@
 		<div class="col-md-6">
 			<label class="form-label" for="username">Username: </label>
 			<input type="text" asp-for="UserName" class="form-control mb-4" placeholder="Username.. " id="username">
+			<span asp-validation-for="UserName" class="text-danger"></span>
 		</div>
 		<div class="col-md-6">
 			<label class="form-label" for="email">Email: </label>
 			<input type="email" asp-for="Email" class="form-control mb-4" placeholder="Email.. "  id="email">
+			<span asp-validation-for="Email" class="text-danger"></span>
 		</div>
 		<div class="col-12">
 			<label class="form-label" for="password">Password: </label>
 			<input type="password" asp-for="HashPassword" class="form-control mb-4" placeholder="Password.. " id="password">
+			<span asp-validation-for="HashPassword" class="text-danger"></span>
 		</div>
 		<div class="col-12">
 			<button class="btn btn-outline-primary" type="submit">Create Account</button>

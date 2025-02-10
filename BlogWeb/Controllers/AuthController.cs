@@ -32,7 +32,7 @@ namespace BlogWeb.Controllers
 
             bool isEmailAvailable = (bool)chcekEmailResponse.Value;
 			if (isEmailAvailable) {
-				ModelState.AddModelError("ErrorMessages", "Email already exists!");
+				ModelState.AddModelError("Email", "Email already exists!");
 			}
 			if (ModelState.IsValid)
 			{
