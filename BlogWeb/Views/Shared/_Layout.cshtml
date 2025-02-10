@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="~/theme/css/style.css">
 </head>
 <body>
-
+    <partial name="_Notification" />
     <partial name="_Header" />
     <main>
         <section class="section">
@@ -42,15 +42,15 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
     <!-- # JS Plugins -->
     <script src="~/theme/plugins/jquery/jquery.min.js"></script>
     <script src="~/theme/plugins/bootstrap/bootstrap.min.js"></script>
 
     <!-- Main Script -->
     <script src="~/theme/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
