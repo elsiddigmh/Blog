@@ -74,6 +74,9 @@ namespace BlogWeb.Controllers
 		[Route("Login")]
 		public async Task<IActionResult> Login(LoginRequestDTO loginDTO)
 		{
+			if (!ModelState.IsValid) { 
+				return View(loginDTO);
+			}
 			APIResponse response = await _authService.LoginAsync<APIResponse>(loginDTO);
 			if (response != null && response.IsSuccess)
 			{
@@ -86,14 +89,21 @@ namespace BlogWeb.Controllers
 				var principle = new ClaimsPrincipal(identity);
 				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principle);
 				HttpContext.Session.SetString(SD.SessionToken, model.Token);
-				return RedirectToAction("Home", "Index");
+				return RedirectToAction("Index", "Home");
 			}
 			else
 			{
 				ModelState.AddModelError("CustomError", response.ErrorMessages.FirstOrDefault());
+				TempData["error"] = "Username or password is incorrect!";
 				return View(loginDTO);
 			}
 
+		}
+
+		[Route("AccessDenied")]
+		public IActionResult AccessDenied()
+		{
+			return View();
 		}
 
 
