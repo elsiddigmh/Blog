@@ -1,20 +1,28 @@
 ﻿using AutoMapper;
+using BlogUtility;
 using BlogWeb.Models;
 using BlogWeb.Models.Dto;
 using BlogWeb.Services.IServices;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace BlogWeb.Controllers
 {
 	public class AuthController : Controller
 	{
 		private readonly IUserService _userService;
+		private readonly IAuthService _authService;
 		private readonly IMapper _mapper;
-		public AuthController(IUserService userService, IMapper mapper)
+		public AuthController(IUserService userService, IMapper mapper, IAuthService authService)
 		{
 			_userService = userService;
 			_mapper = mapper;
+			_authService = authService;
 		}
 
 		[HttpGet]
@@ -54,18 +62,59 @@ namespace BlogWeb.Controllers
 
 		}
 
+
+		[HttpGet]
+		[Route("Login")]
+		public IActionResult Login()
+		{
+			return View();
+		}
+
+		[HttpPost]
+		[Route("Login")]
+		public async Task<IActionResult> Login(LoginRequestDTO loginDTO)
+		{
+			APIResponse response = await _authService.LoginAsync<APIResponse>(loginDTO);
+			if (response != null && response.IsSuccess)
+			{
+				LoginResponseDTO model = JsonConvert.DeserializeObject<LoginResponseDTO>(Convert.ToString(response.Result));	
+				var handler = new JwtSecurityTokenHandler();
+				var jwt = handler.ReadJwtToken(model.Token);
+				var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+				identity.AddClaim(new Claim(ClaimTypes.Email, jwt.Claims.FirstOrDefault(u=>u.Type == "email").Value));
+				identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u=>u.Type == "role").Value));
+				var principle = new ClaimsPrincipal(identity);
+				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principle);
+				HttpContext.Session.SetString(SD.SessionToken, model.Token);
+				return RedirectToAction("Home", "Index");
+			}
+			else
+			{
+				ModelState.AddModelError("CustomError", response.ErrorMessages.FirstOrDefault());
+				return View(loginDTO);
+			}
+
+		}
+
+
+
+
 		//Unique email check for Remote validation
-	   [HttpGet]
+		[HttpGet]
 		public async Task<IActionResult> IsEmailAvailable(string email)
 		{
 			var response = await _userService.GetAllAsync<APIResponse>();
 			var users = JsonConvert.DeserializeObject<List<UserDTO>>(Convert.ToString(response.Result));
 			bool result;
-			foreach (var user in users) {
-				if (user.Email == email) { 
-					result = true;
-                    return Json(result);
-                }
+			if (users != null) {
+				foreach (var user in users)
+				{
+					if (user.Email == email)
+					{
+						result = true;
+						return Json(result);
+					}
+				}
 			}
 			result = false;
             return Json(result);
@@ -78,26 +127,19 @@ namespace BlogWeb.Controllers
 			var response = await _userService.GetAllAsync<APIResponse>();
 			var users = JsonConvert.DeserializeObject<List<UserDTO>>(Convert.ToString(response.Result));
 			bool result;
-			foreach (var user in users)
+			if (users != null)
 			{
-				if (user.UserName == username)
+				foreach (var user in users)
 				{
-					result = true;
-					return Json(result);
+					if (user.UserName == username)
+					{
+						result = true;
+						return Json(result);
+					}
 				}
 			}
 			result = false;
 			return Json(result);
-		}
-
-
-
-
-		[HttpGet]
-		[Route("Login")]
-		public IActionResult Login()
-		{
-			return View();
 		}
 
 	}

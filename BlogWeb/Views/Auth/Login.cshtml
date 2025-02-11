@@ -1,4 +1,5 @@
-﻿@{
+﻿@model BlogWeb.Models.Dto.LoginRequestDTO;
+@{
 	ViewData["Title"] = "Login";
 }
 <div class="col-12">
@@ -8,12 +9,16 @@
 	</div>
 </div>
 <div class="col-lg-6 mt-4 mt-lg-0">
-	<form method="POST" action="#!" class="row">
+	<form method="post" asp-controller="Auth" asp-action="Login" class="row">
 		<div class="col-12">
-			<input type="email" class="form-control mb-4" placeholder="Email.. " name="email" id="email">
+			<label class="form-label" for="email">Email: </label>
+			<input type="email" asp-for="Email" class="form-control mb-4" placeholder="Email.. " id="email">
+			<span asp-validation-for="Email" class="text-danger"></span>
 		</div>
 		<div class="col-12">
-			<input type="password" class="form-control mb-4" placeholder="Password.. " name="subject" id="password">
+			<label class="form-label" for="password">Password: </label>
+			<input type="password" asp-for="HashPassword" class="form-control mb-4" placeholder="Password.. " id="password">
+			<span asp-validation-for="HashPassword" class="text-danger"></span>
 		</div>
 		<div class="col-12">
 			<button class="btn btn-outline-primary" type="submit">Login</button>

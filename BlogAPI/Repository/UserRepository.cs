@@ -34,28 +34,56 @@ namespace BlogAPI.Repository
 
         public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
-            var passwordHelper = new PasswordHelper();
-            var hashedPassword = passwordHelper.HashPassword(loginRequestDTO.HashPassword);
+			var user = _context.Users.FirstOrDefault(u => u.Email == loginRequestDTO.Email);
 
-            var user = _context.Users.FirstOrDefault(u=> u.UserName == loginRequestDTO.Email);
-            bool isValidPassword = passwordHelper.VerifyPassword(hashedPassword, user.HashPassword);
+			if (user == null)
+			{
+				return new LoginResponseDTO()
+				{
+					User = null,
+					Token = ""
+				};
+			}
 
-			if (user == null || !isValidPassword) {
-                return new LoginResponseDTO()
-                {
-                    User = null,
-                    Token = ""
-                };
-            }
+			// Initialize Password Helper
+			var passwordHelper = new PasswordHelper();
 
-            // IF user found => Generate JWT Token
-            var tokenHandler = new JwtSecurityTokenHandler();
+			// Verify the provided password against the stored hashed password
+			bool isValidPassword = passwordHelper.VerifyPassword(user.HashPassword, loginRequestDTO.HashPassword);
+
+			if (!isValidPassword)
+			{
+				return new LoginResponseDTO()
+				{
+					User = null,
+					Token = ""
+				};
+			}
+
+			//         var passwordHelper = new PasswordHelper();
+			//         //var hashedPassword = passwordHelper.HashPassword(loginRequestDTO.HashPassword);
+
+			//         var user = _context.Users.FirstOrDefault(u=> u.Email == loginRequestDTO.Email);
+			//         bool isValidPassword = false;
+			//if (user != null) {
+			//	isValidPassword = passwordHelper.VerifyPassword(loginRequestDTO.HashPassword, user.HashPassword);
+			//}
+			//if (user == null || isValidPassword == false) {
+			//             return new LoginResponseDTO()
+			//             {
+			//                 User = null,
+			//                 Token = ""
+			//             };
+			//         }
+
+			// IF user found => Generate JWT Token
+			var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_secretKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),

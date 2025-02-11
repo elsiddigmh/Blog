@@ -1,6 +1,7 @@
 using BlogWeb;
 using BlogWeb.Services;
 using BlogWeb.Services.IServices;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,24 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 //Services
 builder.Services.AddHttpClient<IUserService, UserService>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddHttpClient<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+	options.Cookie.HttpOnly = true;
+	options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+	options.LoginPath = "/Login";
+	options.AccessDeniedPath = "/AccessDenied";
+	options.SlidingExpiration = true;
+});
+builder.Services.AddSession(options =>
+{
+	options.IdleTimeout = TimeSpan.FromMinutes(100);
+	options.Cookie.HttpOnly = true;
+	options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
