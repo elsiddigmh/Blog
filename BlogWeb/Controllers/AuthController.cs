@@ -29,7 +29,12 @@ namespace BlogWeb.Controllers
 		[Route("Register")]
 		public IActionResult Register()
 		{
-			return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View();
 		}
 
 		[HttpPost]
@@ -67,6 +72,10 @@ namespace BlogWeb.Controllers
 		[Route("Login")]
 		public IActionResult Login()
 		{
+			if (User.Identity.IsAuthenticated) { 
+				return RedirectToAction("Index", "Home");
+			}
+
 			return View();
 		}
 
@@ -98,6 +107,14 @@ namespace BlogWeb.Controllers
 				return View(loginDTO);
 			}
 
+		}
+
+
+		public async Task<IActionResult> Logout()
+		{
+			await HttpContext.SignOutAsync();
+			HttpContext.Session.SetString(SD.SessionToken, "");
+			return RedirectToAction("Index", "Home");
 		}
 
 		[Route("AccessDenied")]

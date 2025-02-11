@@ -1,4 +1,6 @@
-﻿<header class="navigation">
+﻿@using BlogUtility
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpAcc
+<header class="navigation">
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light px-0">
             <a class="navbar-brand order-1 py-0" href="#">
@@ -15,12 +17,22 @@
             </form>
             <div class="collapse navbar-collapse text-center order-lg-2 order-4" id="navigation">
                 <ul class="navbar-nav mx-auto mt-3 mt-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Auth" asp-action="Register">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a>
-                    </li>
+                    @if (httpAcc.HttpContext.Session.GetString(SD.SessionToken) != null
+                        && httpAcc.HttpContext.Session.GetString(SD.SessionToken).Length > 0)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Auth" asp-action="Logout">Logout</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Auth" asp-action="Register">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a>
+                        </li>
+                    }
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
