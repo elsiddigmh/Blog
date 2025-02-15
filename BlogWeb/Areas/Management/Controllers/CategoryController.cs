@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using BlogWeb.Models;
+using BlogWeb.Models.Dto;
 using BlogWeb.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace BlogWeb.Areas.Management.Controllers
 {
+    [Area("Management")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -14,9 +18,11 @@ namespace BlogWeb.Areas.Management.Controllers
             _categoryService = categoryService;
             _mapper = mapper;
         }
-        public IActionResult Index()
+        public async Task <IActionResult> Index()
         {
-            return View();
+            APIResponse response = await _categoryService.GetAllAsync<APIResponse>();
+            var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(response.Result));
+            return View(categories);
         }
     }
 }

@@ -1,0 +1,46 @@
+﻿@using BlogWeb.Models.Dto
+@model List<CategoryDTO>
+
+<div class="card">
+    <div class="card-header row">
+        <div class="col text-start">
+            <div class="card-title">Users Management</div>
+        </div>
+        <div class="col-auto">
+            <a asp-controller="Category" asp-action="Create" class="btn btn-success">Create Category</a>
+        </div>
+    </div>
+    <div class="card-body">
+        @if (Model != null && Model.Count != 0)
+        {
+            <table class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td>@category.Id</td>
+                            <td>@category.Name</td>
+                            <td>
+                                <a asp-controller="Category" asp-action="Delete" asp-route-Id="@category.Id" class="btn btn-danger btn-sm">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h6 class="alert alert-info text-center"> There's no categories </h6>
+        }
+    </div>
+</div>
