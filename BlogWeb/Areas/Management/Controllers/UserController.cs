@@ -46,7 +46,7 @@ namespace BlogWeb.Areas.Admin.Controllers
 				var response = await _userService.CreateAsync<APIResponse>(userDTO);
 				if (response != null && response.IsSuccess)
 				{
-					TempData["success"] = "Villa created successfully";
+					TempData["success"] = "User created successfully";
 					return RedirectToAction(nameof(Index));
 				}
 			}

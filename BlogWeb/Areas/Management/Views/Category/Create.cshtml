@@ -1,0 +1,32 @@
+﻿@model BlogWeb.Models.Dto.CategoryCreateDTO;
+
+<!-- Display general errors -->
+@if (ViewData.ModelState.ErrorCount > 0)
+{
+	<div class="alert alert-danger">
+		<ul>
+			@foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+			{
+				<li>@error.ErrorMessage</li>
+			}
+		</ul>
+	</div>
+}
+
+<div class="card">
+	<div class="card-header">
+		<div class="card-title">Delete User</div>
+	</div>
+	<form method="post" asp-controller="Category" asp-action="Create" class="form-control">
+		<div class="card-body">
+			<div class="form-group">
+				<label asp-for="Name"></label>
+				<input type="text" asp-for="Name" class="form-control form-control" id="Name" placeholder="Name.. ">
+			</div>
+		</div>
+		<div class="card-action">
+			<button type="submit" class="btn btn-success">Create Category</button>
+			<a asp-controller="Catgeory" asp-action="Index" class="btn btn-light">Back</a>
+		</div>
+	</form>
+</div>

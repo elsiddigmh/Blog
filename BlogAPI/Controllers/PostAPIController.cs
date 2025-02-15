@@ -77,7 +77,7 @@ namespace BlogAPI.Controllers
         }
 
         [HttpPost(Name = "CreatePost")]
-        [Authorize]
+        //[Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -105,7 +105,7 @@ namespace BlogAPI.Controllers
         }
 
         [HttpPut("{id:int}", Name = "UpdatePost")]
-        [Authorize]
+        //[Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -144,7 +144,7 @@ namespace BlogAPI.Controllers
         }
 
         [HttpDelete("{id:int}", Name = "DeletePost")]
-        [Authorize]
+        //[Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
