@@ -8,7 +8,8 @@ namespace BlogAPI.Models.Dto
         public string Title { get; set; }
         public string Content { get; set; }
         [Required]
-        public int CategoryId { get; set; }
+		public string PhotoUrl { get; set; }
+		public int CategoryId { get; set; }
         [Required]
         public int AuthorId { get; set; }
     }
