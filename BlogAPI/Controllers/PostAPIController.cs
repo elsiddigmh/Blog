@@ -13,11 +13,13 @@ namespace BlogAPI.Controllers
     public class PostAPIController : Controller
     {
         private readonly IPostRepository _postRepository;
+        private readonly ICategoryRepository _categoryRepository;
         protected APIResponse _response;
         private readonly IMapper _mapper;
-        public PostAPIController(IPostRepository postRepository, IMapper mapper)
+        public PostAPIController(IPostRepository postRepository, ICategoryRepository categoryRepository , IMapper mapper)
         {
             _postRepository = postRepository;
+            _categoryRepository = categoryRepository;
             _mapper = mapper;
             _response = new APIResponse();
         }
@@ -85,7 +87,13 @@ namespace BlogAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> CreatePost([FromBody] PostCreateDTO postDTO)
         {
-            if (!ModelState.IsValid)
+			if (await _categoryRepository.GetAsync(u => u.Id == postDTO.CategoryId) == null)
+			{
+				ModelState.AddModelError("ErrorMessages", "Invalid category value!");
+				return BadRequest(ModelState);
+			}
+
+			if (!ModelState.IsValid)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;

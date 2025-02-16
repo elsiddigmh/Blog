@@ -32,7 +32,8 @@ namespace BlogWeb.Areas.Management.Controllers
         public async Task<IActionResult> Create()
         {
             var response = await _categoryService.GetAllAsync<APIResponse>();
-            if (response != null && response.IsSuccess == true) {
+            if (response != null && response.IsSuccess == true)
+            {
                 var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(response.Result));
                 PostCreateVM postCreateVM = new()
                 {
@@ -42,14 +43,62 @@ namespace BlogWeb.Areas.Management.Controllers
                         Value = u.Id.ToString()
                     }),
                 };
-				return View(postCreateVM);
-			}
-			else
+                return View(postCreateVM);
+            }
+            else
             {
-				TempData["error"] = "There's no categories!";
-				return View();
-			}
+                TempData["error"] = "There's no categories!";
+                return View();
+            }
 
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Create(PostCreateDTO postDTO)
+        {
+            // Prepare Category Select Items
+			var categoryResponse = await _categoryService.GetAllAsync<APIResponse>();
+			var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(categoryResponse.Result));
+			PostCreateVM postCreateVM = new()
+			{
+                PostDTO = _mapper.Map<PostDTO>(postDTO),
+				Categories = categories.Select(u => new SelectListItem
+				{
+					Text = u.Name,
+					Value = u.Id.ToString()
+				}),
+			};
+
+			if (ModelState.IsValid)
+            {
+                if (postDTO != null)
+                {
+                    var response = await _postService.CreateAsync<APIResponse>(postDTO);
+                    if (response != null && response.IsSuccess == true)
+                    {
+                        TempData["success"] = "Post created successfully";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        // Handle errors
+                        if (response.ErrorMessages != null && response.ErrorMessages.Any())
+                        {
+                            foreach (var error in response.ErrorMessages)
+                            {
+                                ModelState.AddModelError(string.Empty, error);
+                            }
+                        }
+                    }
+                }
+
+            }
+            TempData["error"] = "Something went wrong!";
+            return View(postCreateVM);
+
+        }
+
+
     }
 }

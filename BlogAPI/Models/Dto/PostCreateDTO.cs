@@ -10,7 +10,7 @@ namespace BlogAPI.Models.Dto
         [Required]
 		public string PhotoUrl { get; set; }
 		public int CategoryId { get; set; }
-        [Required]
+        //[Required]
         public int AuthorId { get; set; }
     }
 }
