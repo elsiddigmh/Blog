@@ -6,6 +6,7 @@ using BlogWeb.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace BlogWeb.Areas.Management.Controllers
 {
@@ -14,11 +15,13 @@ namespace BlogWeb.Areas.Management.Controllers
     {
         private readonly IPostService _postService;
         private readonly ICategoryService _categoryService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public PostController(IPostService postService, IMapper mapper, ICategoryService categoryService)
+        public PostController(IPostService postService, IMapper mapper, ICategoryService categoryService, IUserService userService)
         {
             _postService = postService;
             _categoryService = categoryService;
+            _userService = userService;
             _mapper = mapper;
         }
 
@@ -31,7 +34,13 @@ namespace BlogWeb.Areas.Management.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var response = await _categoryService.GetAllAsync<APIResponse>();
+			var userEmailClaim = User.FindFirst(ClaimTypes.Email).Value;
+            var userResponse = await _userService.GetAllAsync<APIResponse>();
+            var users = JsonConvert.DeserializeObject<List<UserDTO>>(Convert.ToString(userResponse.Result));
+            var author = users.FirstOrDefault(u=>u.Email == userEmailClaim);
+
+			ViewBag.AuthorId = author.Id;
+			var response = await _categoryService.GetAllAsync<APIResponse>();
             if (response != null && response.IsSuccess == true)
             {
                 var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(response.Result));
@@ -42,7 +51,7 @@ namespace BlogWeb.Areas.Management.Controllers
                         Text = u.Name,
                         Value = u.Id.ToString()
                     }),
-                };
+				};
                 return View(postCreateVM);
             }
             else
@@ -57,7 +66,7 @@ namespace BlogWeb.Areas.Management.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(PostCreateDTO postDTO)
         {
-            // Prepare Category Select Items
+			// Prepare Category Select Items
 			var categoryResponse = await _categoryService.GetAllAsync<APIResponse>();
 			var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(categoryResponse.Result));
 			PostCreateVM postCreateVM = new()

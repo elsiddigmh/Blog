@@ -10,7 +10,7 @@ namespace BlogWeb.Models.Dto
 		public string PhotoUrl { get; set; } = null;
 		[Required]
         public int CategoryId { get; set; }
-        //[Required]
+        [Required]
         public int AuthorId { get; set; }
     }
 }

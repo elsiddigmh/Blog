@@ -1,4 +1,5 @@
-﻿@model BlogWeb.Models.VM.PostCreateVM;
+﻿@using System.Security.Claims
+@model BlogWeb.Models.VM.PostCreateVM;
 
 <!-- Display general errors -->
 @if (ViewData.ModelState.ErrorCount > 0)
@@ -19,6 +20,7 @@
 	</div>
 	<form method="post" asp-controller="Post" asp-action="Create" class="form-control">
 		<div class="card-body">
+			<input type="hidden" asp-for="PostDTO.AuthorId" value="@ViewBag.AuthorId" />
 			<div class="form-group">
 				<label asp-for="PostDTO.Title"></label>
 				<input type="text" asp-for="PostDTO.Title" class="form-control" id="Title" placeholder="Title.. ">
