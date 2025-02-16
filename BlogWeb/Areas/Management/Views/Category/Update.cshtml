@@ -1,4 +1,4 @@
-﻿@model BlogWeb.Models.Dto.CategoryCreateDTO;
+﻿@model BlogWeb.Models.Dto.CategoryUpdateDTO;
 
 <!-- Display general errors -->
 @if (ViewData.ModelState.ErrorCount > 0)
@@ -15,9 +15,10 @@
 
 <div class="card">
 	<div class="card-header">
-		<div class="card-title">Create Category</div>
+		<div class="card-title">Update Category</div>
 	</div>
-	<form method="post" asp-controller="Category" asp-action="Create" class="form-control">
+	<form method="post" asp-controller="Category" asp-action="Update" class="form-control">
+		<input type="hidden" asp-for="Id" />
 		<div class="card-body">
 			<div class="form-group">
 				<label asp-for="Name"></label>
@@ -25,7 +26,7 @@
 			</div>
 		</div>
 		<div class="card-action">
-			<button type="submit" class="btn btn-success">Create Category</button>
+			<button type="submit" class="btn btn-primary">Update Category</button>
 			<a asp-controller="Catgeory" asp-action="Index" class="btn btn-light">Back</a>
 		</div>
 	</form>
