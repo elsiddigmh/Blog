@@ -21,6 +21,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpClient<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
+builder.Services.AddHttpClient<IPostService, PostService>();
+builder.Services.AddScoped<IPostService, PostService>();
+
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>

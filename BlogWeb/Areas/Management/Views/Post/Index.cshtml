@@ -1,0 +1,55 @@
+﻿@using BlogWeb.Models.Dto
+@model List<PostDTO>
+
+<div class="card">
+    <div class="card-header row">
+        <div class="col text-start">
+            <div class="card-title">Users Management</div>
+        </div>
+        <div class="col-auto">
+            <a asp-controller="Post" asp-action="Create" class="btn btn-success">Create Post</a>
+        </div>
+    </div>
+    <div class="card-body">
+        @if (Model != null && Model.Count != 0)
+        {
+            <table class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Content</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Author</th>
+                        <th scope="col">Control</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var post in Model)
+                    {
+                        <tr>
+                            <td>@post.Id</td>
+                            <td>@post.Title</td>
+                            <td>@post.Content</td>
+                            <td>------</td>
+                            <td>@post.Author</td>
+                            <td>
+                                <a asp-controller="Post" asp-action="Delete" asp-route-Id="@post.Id" class="btn btn-danger btn-sm">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
+                                <a asp-controller="Post" asp-action="Update" asp-route-Id="@post.Id" class="btn btn-primary btn-sm">
+                                    <i class="fa-solid fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h6 class="alert alert-info text-center"> There's no posts </h6>
+        }
+    </div>
+</div>
