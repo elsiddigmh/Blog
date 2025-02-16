@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using BlogWeb.Models;
 using BlogWeb.Models.Dto;
-using BlogWeb.Services;
 using BlogWeb.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace BlogWeb.Areas.Management.Controllers
 {
+    [Area("Management")]
     public class PostController : Controller
     {
         private readonly IPostService _postService;
@@ -29,8 +29,5 @@ namespace BlogWeb.Areas.Management.Controllers
         {
             return View();
         }
-
-
-
     }
 }
