@@ -1,4 +1,5 @@
-﻿@model BlogWeb.Models.Dto.CategoryUpdateDTO;
+﻿@using System.Security.Claims
+@model BlogWeb.Models.VM.PostCreateVM;
 
 <!-- Display general errors -->
 @if (ViewData.ModelState.ErrorCount > 0)
@@ -13,21 +14,60 @@
 	</div>
 }
 
-<div class="card">
+<div class="card col-md-8">
 	<div class="card-header">
-		<div class="card-title">Update Category</div>
+		<div class="card-title">Update Post</div>
 	</div>
-	<form method="post" asp-controller="Category" asp-action="Update" class="form-control">
-		<input type="hidden" asp-for="Id" />
+	<form method="post" asp-controller="Post" asp-action="Create" class="form-control">
 		<div class="card-body">
+			<input type="hidden" asp-for="PostDTO.AuthorId" value="@ViewBag.AuthorId" />
 			<div class="form-group">
-				<label asp-for="Name"></label>
-				<input type="text" asp-for="Name" class="form-control form-control" id="Name" placeholder="Name.. ">
+				<label asp-for="PostDTO.Title"></label>
+				<input type="text" asp-for="PostDTO.Title" class="form-control" id="Title" placeholder="Title.. ">
+			</div>
+			<div class="form-group">
+				<label asp-for="PostDTO.Content"></label>
+				<textarea type="text" asp-for="PostDTO.Content" class="form-control" id="Content" placeholder="Content.. "> </textarea>
+			</div>
+			<div class="form-group">
+				<label class="form-label">Category</label>
+				<select asp-for="PostDTO.CategoryId" asp-items="@Model.Categories" class="form-select">
+					<option value="" selected disabled>-- Select Category --</option>
+				</select>
+				<span asp-validation-for="PostDTO.CategoryId" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="PostDTO.PhotoUrl" class="ms-2">Post Image</label>
+				<input type="file" name="file" class="form-control border-0 shadow" />
+				<span asp-validation-for="PostDTO.PhotoUrl" class="text-danger"></span>
 			</div>
 		</div>
 		<div class="card-action">
-			<button type="submit" class="btn btn-primary">Update Category</button>
-			<a asp-controller="Catgeory" asp-action="Index" class="btn btn-light">Back</a>
+			<button type="submit" class="btn btn-primary">Update Post</button>
+			<a asp-controller="Post" asp-action="Index" class="btn btn-light">Back</a>
 		</div>
 	</form>
 </div>
+
+@section Scripts {
+	<script>
+		tinymce.init({
+			selector: 'textarea',
+			plugins: [
+				// Core editing features
+				'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+				// Your account includes a free trial of TinyMCE premium features
+				// Try the most popular premium features until Mar 2, 2025:
+				'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+			],
+			toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+			tinycomments_mode: 'embedded',
+			tinycomments_author: 'Author name',
+			mergetags_list: [
+				{ value: 'First.Name', title: 'First Name' },
+				{ value: 'Email', title: 'Email' },
+			],
+			ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+		});
+	</script>
+}

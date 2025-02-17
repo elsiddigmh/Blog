@@ -116,6 +116,41 @@ namespace BlogWeb.Areas.Management.Controllers
 
         }
 
+		public async Task<IActionResult> Update(int id)
+		{
+			var token = HttpContext.Session.GetString(SD.SessionToken);
 
-    }
+			var postResponse = await _postService.GetAsync<APIResponse>(id,token);
+            if (postResponse != null && postResponse.IsSuccess == true)
+            {
+                var categoryResponse = await _categoryService.GetAllAsync<APIResponse>();
+                if (categoryResponse == null || categoryResponse.IsSuccess == false)
+                {
+                    TempData["error"] = "There's no categories!";
+                    return View();
+                }
+                var postDTO = JsonConvert.DeserializeObject<PostDTO>(Convert.ToString(postResponse.Result));
+                var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(categoryResponse.Result));
+
+                PostCreateVM postCreateVM = new()
+                {
+                    Categories = categories.Select(u => new SelectListItem
+                    {
+                        Text = u.Name,
+                        Value = u.Id.ToString()
+                    }),
+                    PostDTO = postDTO
+                };
+                return View(postCreateVM);
+            }
+            else
+            {
+                TempData["error"] = "Something went wrong!";
+                return RedirectToAction("Index");
+            }
+
+		}
+
+
+	}
 }
