@@ -98,6 +98,8 @@ namespace BlogWeb.Controllers
 				var principle = new ClaimsPrincipal(identity);
 				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principle);
 				HttpContext.Session.SetString(SD.SessionToken, model.Token);
+				var token = HttpContext.Session.GetString(SD.SessionToken);
+
 				return RedirectToAction("Index", "Home");
 			}
 			else

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BlogUtility;
 using BlogWeb.Models;
 using BlogWeb.Models.Dto;
 using BlogWeb.Models.VM;
@@ -27,7 +28,7 @@ namespace BlogWeb.Areas.Management.Controllers
 
         public async Task<IActionResult> Index()
         {
-            APIResponse response = await _postService.GetAllAsync<APIResponse>();
+            APIResponse response = await _postService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             var posts = JsonConvert.DeserializeObject<List<PostDTO>>(Convert.ToString(response.Result));
             return View(posts);
         }
@@ -83,7 +84,14 @@ namespace BlogWeb.Areas.Management.Controllers
             {
                 if (postDTO != null)
                 {
-                    var response = await _postService.CreateAsync<APIResponse>(postDTO);
+                    var token = HttpContext.Session.GetString(SD.SessionToken);
+                    if (String.IsNullOrEmpty(token))
+                    {
+                        ModelState.AddModelError(string.Empty, "Authentication token is missing");
+                        return View(postCreateVM);
+                    }
+
+					var response = await _postService.CreateAsync<APIResponse>(postDTO, token);
                     if (response != null && response.IsSuccess == true)
                     {
                         TempData["success"] = "Post created successfully";
@@ -92,7 +100,7 @@ namespace BlogWeb.Areas.Management.Controllers
                     else
                     {
                         // Handle errors
-                        if (response.ErrorMessages != null && response.ErrorMessages.Any())
+                        if (response?.ErrorMessages != null)
                         {
                             foreach (var error in response.ErrorMessages)
                             {

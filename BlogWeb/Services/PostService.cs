@@ -16,51 +16,56 @@ namespace BlogWeb.Services
             _appUrl = configuration.GetValue<string>("ServiceUrls:BlogAPI");
         }
 
-        public Task<T> CreateAsync<T>(PostCreateDTO postDTO)
+        public Task<T> CreateAsync<T>(PostCreateDTO postDTO, string token)
         {
             return SendAsync<T>(new APIRequest
             {
                 ApiType = SD.ApiType.POST,
                 Data = postDTO,
-                Url = _appUrl + "/api/postAPI"
+                Url = _appUrl + "/api/postAPI",
+                Token = token
             });
         }
 
-        public Task<T> DeleteAsync<T>(int id)
+        public Task<T> DeleteAsync<T>(int id, string token)
         {
             return SendAsync<T>(new APIRequest
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = _appUrl + "/api/postAPI/" + id
-            });
+                Url = _appUrl + "/api/postAPI/" + id,
+				Token = token
+			});
         }
 
-        public Task<T> GetAllAsync<T>()
+        public Task<T> GetAllAsync<T>(string token)
         {
             return SendAsync<T>(new APIRequest
             {
                 ApiType = SD.ApiType.GET,
-                Url = _appUrl + "/api/postAPI"
-            });
+                Url = _appUrl + "/api/postAPI",
+				Token = token
+			});
         }
 
-        public Task<T> GetAsync<T>(int id)
+        public Task<T> GetAsync<T>(int id, string token)
         {
             return SendAsync<T>(new APIRequest
             {
                 ApiType = SD.ApiType.GET,
-                Url = _appUrl + "/api/postAPI/" + id
-            });
+                Url = _appUrl + "/api/postAPI/" + id,
+				Token = token
+			});
         }
 
-        public Task<T> UpdateAsync<T>(PostUpdateDTO postDTO)
+        public Task<T> UpdateAsync<T>(PostUpdateDTO postDTO, string token)
         {
             return SendAsync<T>(new APIRequest
             {
                 ApiType = SD.ApiType.PUT,
                 Data = postDTO,
-                Url = _appUrl + "/api/postAPI/" + postDTO.Id
-            });
+                Url = _appUrl + "/api/postAPI/" + postDTO.Id,
+				Token = token
+			});
         }
     }
 }

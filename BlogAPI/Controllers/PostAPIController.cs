@@ -8,85 +8,85 @@ using System.Net;
 
 namespace BlogAPI.Controllers
 {
-    [ApiController]
-    [Route("api/PostAPI")]
-    public class PostAPIController : Controller
-    {
-        private readonly IPostRepository _postRepository;
-        private readonly ICategoryRepository _categoryRepository;
-        protected APIResponse _response;
-        private readonly IMapper _mapper;
-        public PostAPIController(IPostRepository postRepository, ICategoryRepository categoryRepository , IMapper mapper)
-        {
-            _postRepository = postRepository;
-            _categoryRepository = categoryRepository;
-            _mapper = mapper;
-            _response = new APIResponse();
-        }
+	[ApiController]
+	[Route("api/PostAPI")]
+	public class PostAPIController : Controller
+	{
+		private readonly IPostRepository _postRepository;
+		private readonly ICategoryRepository _categoryRepository;
+		protected APIResponse _response;
+		private readonly IMapper _mapper;
+		public PostAPIController(IPostRepository postRepository, ICategoryRepository categoryRepository, IMapper mapper)
+		{
+			_postRepository = postRepository;
+			_categoryRepository = categoryRepository;
+			_mapper = mapper;
+			_response = new APIResponse();
+		}
 
 
-        [HttpGet(Name = "GetPosts")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse>> GetPosts()
-        {
-            var posts = await _postRepository.GetAllAsync(includeProperties: ["Author", "Category"]);
-            if (posts == null || posts.Count == 0)
-            {
-                _response.StatusCode = HttpStatusCode.NotFound;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add("There's no posts");
-                return NotFound(_response);
-            }
-            _response.StatusCode = HttpStatusCode.OK;
-            _response.IsSuccess = true;
-            _response.Result = _mapper.Map<List<PostDTO>>(posts);
-            return _response;
+		[HttpGet(Name = "GetPosts")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		public async Task<ActionResult<APIResponse>> GetPosts()
+		{
+			var posts = await _postRepository.GetAllAsync(includeProperties: ["Author", "Category"]);
+			if (posts == null || posts.Count == 0)
+			{
+				_response.StatusCode = HttpStatusCode.NotFound;
+				_response.IsSuccess = false;
+				_response.ErrorMessages.Add("There's no posts");
+				return NotFound(_response);
+			}
+			_response.StatusCode = HttpStatusCode.OK;
+			_response.IsSuccess = true;
+			_response.Result = _mapper.Map<List<PostDTO>>(posts);
+			return _response;
 
-        }
+		}
 
 
-        [HttpGet("{id:int}", Name = "GetPost")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse>> GetPost(int id)
-        {
-            var post = await _postRepository.GetAsync(u => u.Id == id, includeProperties: ["Author", "Category"]);
-            if (post == null)
-            {
-                _response.StatusCode = HttpStatusCode.NotFound;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add($"Post not found with Id {id} value");
-                return NotFound(_response);
-            }
+		[HttpGet("{id:int}", Name = "GetPost")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		public async Task<ActionResult<APIResponse>> GetPost(int id)
+		{
+			var post = await _postRepository.GetAsync(u => u.Id == id, includeProperties: ["Author", "Category"]);
+			if (post == null)
+			{
+				_response.StatusCode = HttpStatusCode.NotFound;
+				_response.IsSuccess = false;
+				_response.ErrorMessages.Add($"Post not found with Id {id} value");
+				return NotFound(_response);
+			}
 
-            //Manuel Mapping
-            //PostDTO postDTO = new PostDTO
-            //{
-            //    Id = id,
-            //   ... = ... ect
-            //}
-            //
-            PostDTO postDTO = _mapper.Map<PostDTO>(post);
+			//Manuel Mapping
+			//PostDTO postDTO = new PostDTO
+			//{
+			//    Id = id,
+			//   ... = ... ect
+			//}
+			//
+			PostDTO postDTO = _mapper.Map<PostDTO>(post);
 
-            _response.StatusCode = HttpStatusCode.OK;
-            _response.IsSuccess = true;
-            _response.Result = postDTO;
-            return _response;
+			_response.StatusCode = HttpStatusCode.OK;
+			_response.IsSuccess = true;
+			_response.Result = postDTO;
+			return _response;
 
-        }
+		}
 
-        [HttpPost(Name = "CreatePost")]
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse>> CreatePost([FromBody] PostCreateDTO postDTO)
-        {
+		[HttpPost(Name = "CreatePost")]
+		[Authorize]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		public async Task<ActionResult<APIResponse>> CreatePost([FromBody] PostCreateDTO postDTO)
+		{
 			if (await _categoryRepository.GetAsync(u => u.Id == postDTO.CategoryId) == null)
 			{
 				ModelState.AddModelError("ErrorMessages", "Invalid category value!");
@@ -94,95 +94,99 @@ namespace BlogAPI.Controllers
 			}
 
 			if (!ModelState.IsValid)
-            {
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add(ModelState.ToString());
-                return BadRequest(_response);
-            }
+			{
+				var errors = ModelState.Values
+				.SelectMany(v => v.Errors)
+				.Select(e => e.ErrorMessage)
+				.ToList();
+				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.IsSuccess = false;
+				_response.ErrorMessages = errors;
+				return BadRequest(_response);
+			}
 
-            Post post = _mapper.Map<Post>(postDTO);
-            post.Slug = Helpers.Helpers.GenerateSlug(post.Title);
-            await _postRepository.CreateAsync(post);
-            _response.StatusCode = HttpStatusCode.Created;
-            _response.IsSuccess = true;
-            _response.Result = _mapper.Map<PostDTO>(post);
+			Post post = _mapper.Map<Post>(postDTO);
+			post.Slug = Helpers.Helpers.GenerateSlug(post.Title);
+			await _postRepository.CreateAsync(post);
+			_response.StatusCode = HttpStatusCode.Created;
+			_response.IsSuccess = true;
+			_response.Result = _mapper.Map<PostDTO>(post);
 
-            return _response;
+			return _response;
 
-        }
+		}
 
-        [HttpPut("{id:int}", Name = "UpdatePost")]
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromBody] PostUpdateDTO postDTO)
-        {
-            if (id <= 0 || postDTO == null)
-            {
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Can't send empty data");
-                return BadRequest(_response);
-            }
+		[HttpPut("{id:int}", Name = "UpdatePost")]
+		[Authorize]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromBody] PostUpdateDTO postDTO)
+		{
+			if (id <= 0 || postDTO == null)
+			{
+				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.IsSuccess = false;
+				_response.ErrorMessages.Add("Can't send empty data");
+				return BadRequest(_response);
+			}
 
-            bool isFoundPost = await _postRepository.GetAsync(u => u.Id == id) != null;
+			bool isFoundPost = await _postRepository.GetAsync(u => u.Id == id) != null;
 
-            if (!isFoundPost)
-            {
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add($"Post with Id {id} not found ");
-                return NotFound(_response);
-            }
+			if (!isFoundPost)
+			{
+				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.IsSuccess = false;
+				_response.ErrorMessages.Add($"Post with Id {id} not found ");
+				return NotFound(_response);
+			}
 
-            Post post = _mapper.Map<Post>(postDTO);
-            post.Slug = Helpers.Helpers.GenerateSlug(post.Title);
-            await _postRepository.UpdateAsync(post);
+			Post post = _mapper.Map<Post>(postDTO);
+			post.Slug = Helpers.Helpers.GenerateSlug(post.Title);
+			await _postRepository.UpdateAsync(post);
 
-            _response.StatusCode = HttpStatusCode.NoContent;
-            _response.IsSuccess = true;
+			_response.StatusCode = HttpStatusCode.NoContent;
+			_response.IsSuccess = true;
 
-            return _response;
+			return _response;
 
-        }
+		}
 
-        [HttpDelete("{id:int}", Name = "DeletePost")]
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse>> DeletePost(int id)
-        {
-            if (id <= 0)
-            {
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add($"Invalid id {id} value");
-                return BadRequest(_response);
-            }
+		[HttpDelete("{id:int}", Name = "DeletePost")]
+		[Authorize]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		public async Task<ActionResult<APIResponse>> DeletePost(int id)
+		{
+			if (id <= 0)
+			{
+				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.IsSuccess = false;
+				_response.ErrorMessages.Add($"Invalid id {id} value");
+				return BadRequest(_response);
+			}
 
-            Post post = await _postRepository.GetAsync(u => u.Id == id);
-            if (post == null)
-            {
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add($"Post with Id {id} not found");
-                return BadRequest(_response);
-            }
+			Post post = await _postRepository.GetAsync(u => u.Id == id);
+			if (post == null)
+			{
+				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.IsSuccess = false;
+				_response.ErrorMessages.Add($"Post with Id {id} not found");
+				return BadRequest(_response);
+			}
 
-            await _postRepository.RemoveAsync(post);
-            _response.StatusCode = HttpStatusCode.NoContent;
-            _response.IsSuccess = true;
-            return _response;
+			await _postRepository.RemoveAsync(post);
+			_response.StatusCode = HttpStatusCode.NoContent;
+			_response.IsSuccess = true;
+			return _response;
 
 
-        }
-    }
+		}
+	}
 }
