@@ -7,7 +7,7 @@ namespace BlogAPI.Models.Dto
         [Required]
         public string Title { get; set; }
         public string Content { get; set; }
-		public string PhotoUrl { get; set; }
+		public IFormFile File { get; set; }
 		[Required]
 		public int CategoryId { get; set; }
         [Required]

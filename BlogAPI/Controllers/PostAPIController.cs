@@ -12,12 +12,14 @@ namespace BlogAPI.Controllers
 	[Route("api/PostAPI")]
 	public class PostAPIController : Controller
 	{
+		private readonly IWebHostEnvironment _webHostEnvironment;
 		private readonly IPostRepository _postRepository;
 		private readonly ICategoryRepository _categoryRepository;
 		protected APIResponse _response;
 		private readonly IMapper _mapper;
-		public PostAPIController(IPostRepository postRepository, ICategoryRepository categoryRepository, IMapper mapper)
+		public PostAPIController(IWebHostEnvironment webHostEnvironment, IPostRepository postRepository, ICategoryRepository categoryRepository, IMapper mapper)
 		{
+			_webHostEnvironment = webHostEnvironment;
 			_postRepository = postRepository;
 			_categoryRepository = categoryRepository;
 			_mapper = mapper;
@@ -85,7 +87,8 @@ namespace BlogAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<ActionResult<APIResponse>> CreatePost([FromBody] PostCreateDTO postDTO)
+		[Consumes("multipart/form-data")]
+		public async Task<ActionResult<APIResponse>> CreatePost([FromForm] PostCreateDTO postDTO)
 		{
 			if (await _categoryRepository.GetAsync(u => u.Id == postDTO.CategoryId) == null)
 			{
@@ -106,6 +109,23 @@ namespace BlogAPI.Controllers
 			}
 
 			Post post = _mapper.Map<Post>(postDTO);
+
+
+			if (postDTO.File != null)
+			{
+				string directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads\\Posts\\");
+				string filePath = $"{directoryPath + Guid.NewGuid()}_{Path.GetFileName(postDTO.File.FileName)}";
+				using (var stream = new FileStream(filePath, FileMode.Create))
+				{
+					postDTO.File.CopyTo(stream);
+				}
+				post.PhotoUrl = filePath;
+			}
+			else
+			{
+				post.PhotoUrl = string.Empty;
+			}
+
 			post.Slug = Helpers.Helpers.GenerateSlug(post.Title);
 			await _postRepository.CreateAsync(post);
 			_response.StatusCode = HttpStatusCode.Created;
