@@ -18,18 +18,21 @@ namespace BlogWeb.Areas.Management.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public PostController(IPostService postService, IMapper mapper, ICategoryService categoryService, IUserService userService)
+        private readonly ILogger<PostController> _logger;
+        public PostController(IPostService postService, IMapper mapper, ICategoryService categoryService, IUserService userService, ILogger<PostController> logger)
         {
             _postService = postService;
             _categoryService = categoryService;
             _userService = userService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
             APIResponse response = await _postService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             var posts = JsonConvert.DeserializeObject<List<PostDTO>>(Convert.ToString(response.Result));
+            _logger.LogInformation("This the first log message1");
             return View(posts);
         }
 

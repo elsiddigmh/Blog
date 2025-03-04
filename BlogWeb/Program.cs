@@ -2,6 +2,7 @@ using BlogWeb;
 using BlogWeb.Services;
 using BlogWeb.Services.IServices;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.AddHttpClient<IPostService, PostService>();
 builder.Services.AddScoped<IPostService, PostService>();
 
 
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
@@ -42,6 +44,14 @@ builder.Services.AddSession(options =>
 	options.Cookie.IsEssential = true;
 });
 
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog();
+
+// Configure Serilog to logging in file 
+Log.Logger = new LoggerConfiguration().WriteTo.Console()
+									  .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day).CreateLogger();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -54,7 +64,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
