@@ -91,7 +91,7 @@ namespace BlogWeb.Areas.Management.Controllers
                         return View(postCreateVM);
                     }
 
-					var response = await _postService.CreateAsync<APIResponse>(postDTO, token);
+					var response = await _postService.CreateAsync<APIResponse>(postDTO, postDTO.File , token);
                     if (response != null && response.IsSuccess == true)
                     {
                         TempData["success"] = "Post created successfully";

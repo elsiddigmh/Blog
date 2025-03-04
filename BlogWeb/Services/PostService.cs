@@ -2,6 +2,7 @@
 using BlogWeb.Models;
 using BlogWeb.Models.Dto;
 using BlogWeb.Services.IServices;
+using System.Net.Http.Headers;
 
 namespace BlogWeb.Services
 {
@@ -16,18 +17,40 @@ namespace BlogWeb.Services
             _appUrl = configuration.GetValue<string>("ServiceUrls:BlogAPI");
         }
 
-        public Task<T> CreateAsync<T>(PostCreateDTO postDTO, string token)
+        public Task<T> CreateAsync<T>(PostCreateDTO postDTO, IFormFile file, string token)
         {
-            return SendAsync<T>(new APIRequest
+            using (var formData = new MultipartFormDataContent())
             {
-                ApiType = SD.ApiType.POST,
-                Data = postDTO,
-                Url = _appUrl + "/api/postAPI",
-                Token = token
-            });
+                // Add the file
+                if (file != null)
+                {
+                    var fileContent = new StreamContent(file.OpenReadStream());
+                    fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(file.ContentType);
+                    formData.Add(fileContent, "File", file.FileName);
+                }
+
+                // Add other fields from postDTO
+                foreach (var prop in postDTO.GetType().GetProperties())
+                {
+                    var value = prop.GetValue(postDTO);
+                    if (value != null)
+                    {
+                        formData.Add(new StringContent(value.ToString()), prop.Name);
+                    }
+                }
+
+                return SendAsync<T>(new APIRequest
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = postDTO,
+                    Url = _appUrl + "/api/postAPI",
+                    Token = token
+                });
+            }
         }
 
-        public Task<T> DeleteAsync<T>(int id, string token)
+
+		public Task<T> DeleteAsync<T>(int id, string token)
         {
             return SendAsync<T>(new APIRequest
             {
@@ -67,5 +90,6 @@ namespace BlogWeb.Services
 				Token = token
 			});
         }
+
     }
 }

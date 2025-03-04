@@ -37,9 +37,9 @@
 				<span asp-validation-for="PostDTO.CategoryId" class="text-danger"></span>
 			</div>
 			<div class="form-group">
-				<label asp-for="PostDTO.PhotoUrl" class="ms-2">Post Image</label>
-				<input type="file" name="file" class="form-control border-0 shadow" />
-				<span asp-validation-for="PostDTO.PhotoUrl" class="text-danger"></span>
+				<label asp-for="PostDTO.File" class="ms-2">Post Image</label>
+				<input type="file" asp-for="PostDTO.File" class="form-control border-0 shadow" />
+				<span asp-validation-for="PostDTO.File" class="text-danger"></span>
 			</div>
 		</div>
 		<div class="card-action">

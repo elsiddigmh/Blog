@@ -18,7 +18,7 @@
 	<div class="card-header">
 		<div class="card-title">Create Post</div>
 	</div>
-	<form method="post" asp-controller="Post" asp-action="Create" class="form-control">
+	<form method="post" asp-controller="Post" asp-action="Create" enctype="multipart/form-data" class="form-control">
 		<div class="card-body">
 			<input type="hidden" asp-for="PostDTO.AuthorId" value="@ViewBag.AuthorId" />
 			<div class="form-group">
@@ -37,9 +37,9 @@
 				<span asp-validation-for="PostDTO.CategoryId" class="text-danger"></span>
 			</div>
 			<div class="form-group">
-				<label asp-for="PostDTO.PhotoUrl" class="ms-2">Post Image</label>
-				<input type="file" name="file" class="form-control border-0 shadow" />
-				<span asp-validation-for="PostDTO.PhotoUrl" class="text-danger"></span>
+				<label asp-for="PostDTO.File" class="ms-2">Post Image</label>
+				<input type="file" asp-for="PostDTO.File" class="form-control border-0 shadow" />
+				<span asp-validation-for="PostDTO.File" class="text-danger"></span>
 			</div>
 		</div>
 		<div class="card-action">
@@ -58,7 +58,7 @@
 				'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
 				// Your account includes a free trial of TinyMCE premium features
 				// Try the most popular premium features until Mar 2, 2025:
-				'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+				//'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
 			],
 			toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
 			tinycomments_mode: 'embedded',
