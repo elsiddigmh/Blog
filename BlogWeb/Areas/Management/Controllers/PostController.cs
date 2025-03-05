@@ -19,20 +19,27 @@ namespace BlogWeb.Areas.Management.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly ILogger<PostController> _logger;
-        public PostController(IPostService postService, IMapper mapper, ICategoryService categoryService, IUserService userService, ILogger<PostController> logger)
+		private readonly IHttpContextAccessor _httpContextAccessor;
+		public PostController(IPostService postService, IMapper mapper,
+                              ICategoryService categoryService, IUserService userService,
+                              ILogger<PostController> logger, IHttpContextAccessor httpContextAccessor)
         {
             _postService = postService;
             _categoryService = categoryService;
             _userService = userService;
             _mapper = mapper;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IActionResult> Index()
         {
-            APIResponse response = await _postService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+            var token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
+
+			APIResponse response = await _postService.GetAllAsync<APIResponse>(token);
             var posts = JsonConvert.DeserializeObject<List<PostDTO>>(Convert.ToString(response.Result));
-            _logger.LogInformation("This the first log message1");
+            _logger.LogInformation($"Token = {token}");
+
             return View(posts);
         }
 
@@ -87,8 +94,12 @@ namespace BlogWeb.Areas.Management.Controllers
             {
                 if (postDTO != null)
                 {
-                    var token = HttpContext.Session.GetString(SD.SessionToken);
-                    if (String.IsNullOrEmpty(token))
+					// Using Session
+					//var token = HttpContext.Session.GetString(SD.SessionToken);
+
+					//Using Cookie
+					var token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
+					if (String.IsNullOrEmpty(token))
                     {
                         ModelState.AddModelError(string.Empty, "Authentication token is missing");
                         return View(postCreateVM);

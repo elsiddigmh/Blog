@@ -9,10 +9,12 @@ namespace BlogWeb.Services
 	{
 		private readonly IHttpClientFactory _httpClientFactory;
 		private readonly string _appUrl;
+		private readonly IHttpContextAccessor _httpContextAccessor;
 
-		public AuthService(IHttpClientFactory httpClientFactory, IConfiguration configuration) : base(httpClientFactory)
+		public AuthService(IHttpClientFactory httpClientFactory, IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : base(httpClientFactory,httpContextAccessor)
 		{
 			_httpClientFactory = httpClientFactory;
+			_httpContextAccessor = httpContextAccessor;
 			_appUrl = configuration.GetValue<string>("ServiceUrls:BlogAPI");
 		}
 

@@ -14,11 +14,13 @@ namespace BlogWeb.Services
 
         public APIResponse responseModel { get; set; }
         public IHttpClientFactory httpClient { get; set; }
+		private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public BaseService(IHttpClientFactory httpClient)
+		public BaseService(IHttpClientFactory httpClient, IHttpContextAccessor httpContextAccessor)
         {
             this.httpClient = httpClient;
             this.responseModel = new APIResponse();
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<T> SendAsync<T>(APIRequest apiRequest)
@@ -70,9 +72,10 @@ namespace BlogWeb.Services
                 }
 
                 HttpResponseMessage apiResponse = null;
-                if (!string.IsNullOrEmpty(apiRequest.Token))
+				var tokenFromCookie = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
+				if (!string.IsNullOrEmpty(apiRequest.Token))
                 {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenFromCookie);
                 }
                 apiResponse = await client.SendAsync(message);
                 

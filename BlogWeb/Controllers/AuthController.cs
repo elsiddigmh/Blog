@@ -97,8 +97,21 @@ namespace BlogWeb.Controllers
 				identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u=>u.Type == "role").Value));
 				var principle = new ClaimsPrincipal(identity);
 				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principle);
-				HttpContext.Session.SetString(SD.SessionToken, model.Token);
-				var token = HttpContext.Session.GetString(SD.SessionToken);
+
+				// Store Token in session
+				//HttpContext.Session.SetString(SD.SessionToken, model.Token);
+				//var token = HttpContext.Session.GetString(SD.SessionToken);
+
+				// Store Token in cookie
+				var cookieOptions = new CookieOptions
+				{
+					HttpOnly = true, // Prevent JavaScript access (XSS protection)
+					Secure = true,   // Only transmit over HTTPS
+					SameSite = SameSiteMode.Strict, // Prevent CSRF attacks
+					Expires = DateTime.UtcNow.AddMinutes(60) // Expiry time
+				};
+
+				Response.Cookies.Append("AuthToken", model.Token, cookieOptions);
 
 				return RedirectToAction("Index", "Home");
 			}
@@ -115,7 +128,11 @@ namespace BlogWeb.Controllers
 		public async Task<IActionResult> Logout()
 		{
 			await HttpContext.SignOutAsync();
-			HttpContext.Session.SetString(SD.SessionToken, "");
+			//Using Session
+			//HttpContext.Session.SetString(SD.SessionToken, "");
+
+			// Using Cookie
+			Response.Cookies.Delete("AuthToken");
 			return RedirectToAction("Index", "Home");
 		}
 

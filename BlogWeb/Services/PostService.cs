@@ -10,11 +10,13 @@ namespace BlogWeb.Services
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _appUrl;
+		private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PostService(IHttpClientFactory httpClientFactory, IConfiguration configuration) : base(httpClientFactory)
+		public PostService(IHttpClientFactory httpClientFactory, IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : base(httpClientFactory, httpContextAccessor)
         {
             _httpClientFactory = httpClientFactory;
             _appUrl = configuration.GetValue<string>("ServiceUrls:BlogAPI");
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Task<T> CreateAsync<T>(PostCreateDTO postDTO, IFormFile file, string token)
