@@ -19,32 +19,28 @@ namespace BlogWeb.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public Task<T> CreateAsync<T>(PostCreateDTO postDTO, IFormFile file, string token)
+        public Task<T> CreateAsync<T>(PostCreateDTO postDTO, string token)
         {
             using (var formData = new MultipartFormDataContent())
             {
                 // Add the file
-                if (file != null)
+                if (postDTO.File != null)
                 {
-                    var fileContent = new StreamContent(file.OpenReadStream());
-                    fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(file.ContentType);
-                    formData.Add(fileContent, "File", file.FileName);
+                    var fileContent = new StreamContent(postDTO.File.OpenReadStream());
+                    fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(postDTO.File.ContentType);
+                    formData.Add(fileContent, "File", postDTO.File.FileName);
                 }
 
                 // Add other fields from postDTO
-                foreach (var prop in postDTO.GetType().GetProperties())
-                {
-                    var value = prop.GetValue(postDTO);
-                    if (value != null)
-                    {
-                        formData.Add(new StringContent(value.ToString()), prop.Name);
-                    }
-                }
+                formData.Add(new StringContent(postDTO.Title), "Title");
+				formData.Add(new StringContent(postDTO.Content ?? ""), "Content");
+				formData.Add(new StringContent(postDTO.CategoryId.ToString()), "CategoryId");
+				formData.Add(new StringContent(postDTO.AuthorId.ToString()), "AuthorId");
 
                 return SendAsync<T>(new APIRequest
                 {
                     ApiType = SD.ApiType.POST,
-                    Data = postDTO,
+                    Data = formData,
                     Url = _appUrl + "/api/postAPI",
                     Token = token
                 });

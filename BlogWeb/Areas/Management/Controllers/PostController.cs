@@ -7,6 +7,7 @@ using BlogWeb.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace BlogWeb.Areas.Management.Controllers
@@ -75,20 +76,18 @@ namespace BlogWeb.Areas.Management.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(PostCreateDTO postDTO)
+        public async Task<IActionResult> Create(PostCreateVM postCreateVM)
         {
 			// Prepare Category Select Items
 			var categoryResponse = await _categoryService.GetAllAsync<APIResponse>();
 			var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(categoryResponse.Result));
-			PostCreateVM postCreateVM = new()
+			postCreateVM.Categories = categories.Select(u => new SelectListItem
 			{
-                PostDTO = _mapper.Map<PostDTO>(postDTO),
-				Categories = categories.Select(u => new SelectListItem
-				{
-					Text = u.Name,
-					Value = u.Id.ToString()
-				}),
-			};
+				Text = u.Name,
+				Value = u.Id.ToString()
+			});
+
+			var postDTO = _mapper.Map<PostCreateDTO>(postCreateVM.PostDTO);
 
 			if (ModelState.IsValid)
             {
@@ -105,7 +104,7 @@ namespace BlogWeb.Areas.Management.Controllers
                         return View(postCreateVM);
                     }
 
-					var response = await _postService.CreateAsync<APIResponse>(postDTO, postDTO.File , token);
+					var response = await _postService.CreateAsync<APIResponse>(postDTO, token);
                     if (response != null && response.IsSuccess == true)
                     {
                         TempData["success"] = "Post created successfully";

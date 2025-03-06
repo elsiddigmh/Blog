@@ -18,7 +18,7 @@
 	<div class="card-header">
 		<div class="card-title">Create Post</div>
 	</div>
-	<form method="post" asp-controller="Post" asp-action="Create" enctype="multipart/form-data" class="form-control">
+	<form method="post" enctype="multipart/form-data" asp-controller="Post" asp-action="Create" class="form-control">
 		<div class="card-body">
 			<input type="hidden" asp-for="PostDTO.AuthorId" value="@ViewBag.AuthorId" />
 			<div class="form-group">
