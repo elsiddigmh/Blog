@@ -21,6 +21,7 @@ namespace BlogWeb.Areas.Management.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<PostController> _logger;
 		private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly string _token;
 		public PostController(IPostService postService, IMapper mapper,
                               ICategoryService categoryService, IUserService userService,
                               ILogger<PostController> logger, IHttpContextAccessor httpContextAccessor)
@@ -31,15 +32,17 @@ namespace BlogWeb.Areas.Management.Controllers
             _mapper = mapper;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
-        }
+            _token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
+
+		}
 
         public async Task<IActionResult> Index()
         {
-            var token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
+            //var token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
 
-			APIResponse response = await _postService.GetAllAsync<APIResponse>(token);
+			APIResponse response = await _postService.GetAllAsync<APIResponse>(_token);
             var posts = JsonConvert.DeserializeObject<List<PostDTO>>(Convert.ToString(response.Result));
-            _logger.LogInformation($"Token = {token}");
+            _logger.LogInformation($"Token = {_token}");
 
             return View(posts);
         }
@@ -56,7 +59,7 @@ namespace BlogWeb.Areas.Management.Controllers
             if (response != null && response.IsSuccess == true)
             {
                 var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(response.Result));
-                PostCreateVM postCreateVM = new()
+                PostVM postCreateVM = new()
                 {
                     Categories = categories.Select(u => new SelectListItem
                     {
@@ -76,7 +79,7 @@ namespace BlogWeb.Areas.Management.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(PostCreateVM postCreateVM)
+        public async Task<IActionResult> Create(PostVM postCreateVM)
         {
 			// Prepare Category Select Items
 			var categoryResponse = await _categoryService.GetAllAsync<APIResponse>();
@@ -97,14 +100,14 @@ namespace BlogWeb.Areas.Management.Controllers
 					//var token = HttpContext.Session.GetString(SD.SessionToken);
 
 					//Using Cookie
-					var token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
-					if (String.IsNullOrEmpty(token))
+					//var token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
+					if (String.IsNullOrEmpty(_token))
                     {
                         ModelState.AddModelError(string.Empty, "Authentication token is missing");
                         return View(postCreateVM);
                     }
 
-					var response = await _postService.CreateAsync<APIResponse>(postDTO, token);
+					var response = await _postService.CreateAsync<APIResponse>(postDTO, _token);
                     if (response != null && response.IsSuccess == true)
                     {
                         TempData["success"] = "Post created successfully";
@@ -129,11 +132,11 @@ namespace BlogWeb.Areas.Management.Controllers
 
         }
 
+        [HttpGet]
 		public async Task<IActionResult> Update(int id)
 		{
-			var token = HttpContext.Session.GetString(SD.SessionToken);
 
-			var postResponse = await _postService.GetAsync<APIResponse>(id,token);
+			var postResponse = await _postService.GetAsync<APIResponse>(id,_token);
             if (postResponse != null && postResponse.IsSuccess == true)
             {
                 var categoryResponse = await _categoryService.GetAllAsync<APIResponse>();
@@ -142,25 +145,65 @@ namespace BlogWeb.Areas.Management.Controllers
                     TempData["error"] = "There's no categories!";
                     return View();
                 }
-                var postDTO = JsonConvert.DeserializeObject<PostDTO>(Convert.ToString(postResponse.Result));
+                var postUpdateDTO = JsonConvert.DeserializeObject<PostUpdateDTO>(Convert.ToString(postResponse.Result));
                 var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(categoryResponse.Result));
 
-                PostCreateVM postCreateVM = new()
+                PostUpdateVM postUpdateVM = new()
                 {
                     Categories = categories.Select(u => new SelectListItem
                     {
                         Text = u.Name,
                         Value = u.Id.ToString()
                     }),
-                    PostDTO = postDTO
-                };
-                return View(postCreateVM);
+                    PostUpdateDTO = postUpdateDTO
+				};
+                return View(postUpdateVM);
             }
             else
             {
                 TempData["error"] = "Something went wrong!";
                 return RedirectToAction("Index");
             }
+
+		}
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> Update(PostUpdateVM postUpdateVM)
+        {
+			var categoryResponse = await _categoryService.GetAllAsync<APIResponse>();
+			var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(categoryResponse.Result));
+			postUpdateVM.Categories = categories.Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString()
+            });
+			if (ModelState.IsValid)
+            {
+				var response = await _postService.UpdateAsync<APIResponse>(postUpdateVM.PostUpdateDTO, _token);
+
+                if(response != null && response.IsSuccess == true)
+                {
+					TempData["success"] = "Post updated successfully";
+					return RedirectToAction(nameof(Index));
+				}
+				else
+				{
+					// Handle errors
+					if (response.ErrorMessages != null && response.ErrorMessages.Any())
+					{
+						foreach (var error in response.ErrorMessages)
+						{
+							ModelState.AddModelError(string.Empty, error);
+						}
+					}
+				}
+			}
+
+			TempData["error"] = "Something went wrong!";
+			return View(postUpdateVM);
+
 
 		}
 

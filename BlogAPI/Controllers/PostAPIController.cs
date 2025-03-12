@@ -144,8 +144,21 @@ namespace BlogAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromBody] PostUpdateDTO postDTO)
+		[Consumes("multipart/form-data")]
+		public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromForm] PostUpdateDTO postDTO)
 		{
+			//if (!ModelState.IsValid)
+			//{
+			//	var errors = ModelState.Values
+			//	.SelectMany(v => v.Errors)
+			//	.Select(e => e.ErrorMessage)
+			//	.ToList();
+			//	_response.StatusCode = HttpStatusCode.BadRequest;
+			//	_response.IsSuccess = false;
+			//	_response.ErrorMessages = errors;
+			//	return BadRequest(_response);
+			//}
+
 			if (id <= 0 || postDTO == null)
 			{
 				_response.StatusCode = HttpStatusCode.BadRequest;
@@ -165,13 +178,26 @@ namespace BlogAPI.Controllers
 			}
 
 			Post post = _mapper.Map<Post>(postDTO);
+
+			if (postDTO.File != null)
+			{
+				string directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads\\Posts\\");
+				string filePath = $"{directoryPath + Guid.NewGuid()}_{Path.GetFileName(postDTO.File.FileName)}";
+				using (var stream = new FileStream(filePath, FileMode.Create))
+				{
+					postDTO.File.CopyTo(stream);
+				}
+				post.PhotoUrl = filePath;
+			}
+
 			post.Slug = Helpers.Helpers.GenerateSlug(post.Title);
 			await _postRepository.UpdateAsync(post);
 
-			_response.StatusCode = HttpStatusCode.NoContent;
+			_response.StatusCode = HttpStatusCode.OK;
+			_response.Result = _mapper.Map<PostDTO>(post);
 			_response.IsSuccess = true;
 
-			return _response;
+			return Ok(_response);
 
 		}
 

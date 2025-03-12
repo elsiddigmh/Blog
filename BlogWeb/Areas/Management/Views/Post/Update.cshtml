@@ -1,5 +1,5 @@
 ﻿@using System.Security.Claims
-@model BlogWeb.Models.VM.PostCreateVM;
+@model BlogWeb.Models.VM.PostUpdateVM;
 
 <!-- Display general errors -->
 @if (ViewData.ModelState.ErrorCount > 0)
@@ -18,28 +18,30 @@
 	<div class="card-header">
 		<div class="card-title">Update Post</div>
 	</div>
-	<form method="post" asp-controller="Post" asp-action="Create" class="form-control">
+	<form method="post" enctype="multipart/form-data" asp-controller="Post" asp-action="Update" class="form-control">
 		<div class="card-body">
-			<input type="hidden" asp-for="PostDTO.AuthorId" value="@ViewBag.AuthorId" />
+			<input type="hidden" asp-for="PostUpdateDTO.Id" />
+			<input type="hidden" asp-for="PostUpdateDTO.AuthorId" />
+
 			<div class="form-group">
-				<label asp-for="PostDTO.Title"></label>
-				<input type="text" asp-for="PostDTO.Title" class="form-control" id="Title" placeholder="Title.. ">
+				<label asp-for="PostUpdateDTO.Title"></label>
+				<input type="text" asp-for="PostUpdateDTO.Title" class="form-control" id="Title" placeholder="Title.. ">
 			</div>
 			<div class="form-group">
-				<label asp-for="PostDTO.Content"></label>
-				<textarea type="text" asp-for="PostDTO.Content" class="form-control" id="Content" placeholder="Content.. "> </textarea>
+				<label asp-for="PostUpdateDTO.Content"></label>
+				<textarea type="text" asp-for="PostUpdateDTO.Content" class="form-control" id="Content" placeholder="Content.. "> </textarea>
 			</div>
 			<div class="form-group">
 				<label class="form-label">Category</label>
-				<select asp-for="PostDTO.CategoryId" asp-items="@Model.Categories" class="form-select">
+				<select asp-for="PostUpdateDTO.CategoryId" asp-items="@Model.Categories" class="form-select">
 					<option value="" selected disabled>-- Select Category --</option>
 				</select>
-				<span asp-validation-for="PostDTO.CategoryId" class="text-danger"></span>
+				<span asp-validation-for="PostUpdateDTO.CategoryId" class="text-danger"></span>
 			</div>
 			<div class="form-group">
-				<label asp-for="PostDTO.File" class="ms-2">Post Image</label>
-				<input type="file" asp-for="PostDTO.File" class="form-control border-0 shadow" />
-				<span asp-validation-for="PostDTO.File" class="text-danger"></span>
+				<label asp-for="PostUpdateDTO.File" class="ms-2">Post Image</label>
+				<input type="file" asp-for="PostUpdateDTO.File" class="form-control border-0 shadow" />
+				<span asp-validation-for="PostUpdateDTO.File" class="text-danger"></span>
 			</div>
 		</div>
 		<div class="card-action">
@@ -57,8 +59,6 @@
 				// Core editing features
 				'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
 				// Your account includes a free trial of TinyMCE premium features
-				// Try the most popular premium features until Mar 2, 2025:
-				'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
 			],
 			toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
 			tinycomments_mode: 'embedded',

@@ -8,6 +8,7 @@ namespace BlogWeb
         public MappingConfig() { 
         
             CreateMap<PostDTO, PostCreateDTO>().ReverseMap();
+            CreateMap<PostDTO, PostUpdateDTO>().ReverseMap();
         }
     }
 }

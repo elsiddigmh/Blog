@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BlogWeb.Models.VM
 {
-	public class PostCreateVM
+	public class PostUpdateVM
 	{
-		public PostDTO PostDTO { get; set; }
+		public PostUpdateDTO PostUpdateDTO { get; set; }
 		public IEnumerable<SelectListItem> Categories { get; set; }
 	}
 }
