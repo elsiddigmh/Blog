@@ -10,6 +10,7 @@ namespace BlogWeb.Models.Dto
         public string Content { get; set; }
         public string Slug { get; set; }
         public IFormFile File { get; set; } = null;
+        public string PhotoUrl { get; set; } = null;
 		public bool IsPublished { get; set; }
 
         public DateTime CreatedAt { get; set; }

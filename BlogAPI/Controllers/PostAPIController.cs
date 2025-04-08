@@ -167,11 +167,11 @@ namespace BlogAPI.Controllers
 				return BadRequest(_response);
 			}
 
-			bool isFoundPost = await _postRepository.GetAsync(u => u.Id == id) != null;
-
-			if (!isFoundPost)
+			// Get existing post
+			var existingPost = await _postRepository.GetAsync(u => u.Id == id);
+			if (existingPost == null)
 			{
-				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.StatusCode = HttpStatusCode.NotFound;
 				_response.IsSuccess = false;
 				_response.ErrorMessages.Add($"Post with Id {id} not found ");
 				return NotFound(_response);
@@ -181,6 +181,13 @@ namespace BlogAPI.Controllers
 
 			if (postDTO.File != null)
 			{
+				// Delete old image if it exists
+				if (!string.IsNullOrEmpty(existingPost.PhotoUrl) && System.IO.File.Exists(existingPost.PhotoUrl))
+				{
+					System.IO.File.Delete(existingPost.PhotoUrl);
+				}
+
+				// Save new image
 				string directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads\\Posts\\");
 				string filePath = $"{directoryPath + Guid.NewGuid()}_{Path.GetFileName(postDTO.File.FileName)}";
 				using (var stream = new FileStream(filePath, FileMode.Create))
@@ -225,6 +232,11 @@ namespace BlogAPI.Controllers
 				_response.IsSuccess = false;
 				_response.ErrorMessages.Add($"Post with Id {id} not found");
 				return BadRequest(_response);
+			}
+
+			if (!string.IsNullOrEmpty(post.PhotoUrl) && System.IO.File.Exists(post.PhotoUrl))
+			{
+				System.IO.File.Delete(post.PhotoUrl);
 			}
 
 			await _postRepository.RemoveAsync(post);

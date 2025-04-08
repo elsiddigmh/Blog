@@ -172,6 +172,9 @@ namespace BlogWeb.Areas.Management.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(PostUpdateVM postUpdateVM)
         {
+
+            // Stopped here,, next step is delete old image in PostAPIController
+
 			var categoryResponse = await _categoryService.GetAllAsync<APIResponse>();
 			var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(categoryResponse.Result));
 			postUpdateVM.Categories = categories.Select(u => new SelectListItem
@@ -179,6 +182,8 @@ namespace BlogWeb.Areas.Management.Controllers
                 Text = u.Name,
                 Value = u.Id.ToString()
             });
+
+
 			if (ModelState.IsValid)
             {
 				var response = await _postService.UpdateAsync<APIResponse>(postUpdateVM.PostUpdateDTO, _token);
