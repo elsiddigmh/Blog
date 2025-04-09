@@ -40,31 +40,31 @@
 		</div>
 		<ul class="nav">
 			<li class="nav-item">
-				<a href="#">
+				<a asp-area="Management" asp-controller="Home" asp-action="Index">
 					<i class="fa-solid fa-chart-line"></i>
 					<p>Dashboard</p>
 				</a>
 			</li>
-			<li class="nav-item">
-				<a href="#">
+			<li class="nav-item @(currentPath.Contains("management/post") ? "active" : "")">
+				<a asp-area="Management" asp-controller="Post" asp-action="Index">
 					<i class="fa-solid fa-note-sticky"></i>
 					<p>Posts</p>
 				</a>
 			</li>
-			<li class="nav-item">
-				<a href="#">
+			<li class="nav-item @(currentPath.Contains("management/category") ? "active" : "")">
+				<a asp-area="Management" asp-controller="Category" asp-action="Index">
 					<i class="fa-solid fa-list"></i>
 					<p>Categories</p>
 				</a>
 			</li>
-			<li class="nav-item">
+			<li class="nav-item @(currentPath.Contains("management/comment") ? "active" : "")">
 				<a href="#">
 					<i class="fa-solid fa-comments"></i>
 					<p>Comments</p>
 				</a>
 			</li>
-			<li class="nav-item @(currentPath.Contains("admin/user") ? "active" : "")">
-				<a asp-area="Admin" asp-controller="User" asp-action="Index">
+			<li class="nav-item @(currentPath.Contains("management/user") ? "active" : "")">
+				<a asp-area="Management" asp-controller="User" asp-action="Index">
 					<i class="fa-solid fa-users"></i>
 					<p>Users</p>
 				</a>
@@ -73,12 +73,6 @@
 				<a href="#">
 					<i class="fa-solid fa-gear"></i>
 					<p>Settings</p>
-				</a>
-			</li>
-			<li class="nav-item">
-				<a href="#">
-					<i class="la la-fonticons"></i>
-					<p>Icons</p>
 				</a>
 			</li>
 		</ul>
