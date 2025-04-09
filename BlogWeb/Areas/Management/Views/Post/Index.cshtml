@@ -35,9 +35,11 @@
                             <td>@post.Category.Name</td>
                             <td>@post.Author.UserName</td>
                             <td>
-                                <a asp-controller="Post" asp-action="Delete" asp-route-Id="@post.Id" class="btn btn-danger btn-sm">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </a>
+                                <form class="d-inline-block" method="post" asp-controller="Post" asp-action="Delete" asp-route-Id="@post.Id">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </form>
                                 <a asp-controller="Post" asp-action="Update" asp-route-Id="@post.Id" class="btn btn-primary btn-sm">
                                     <i class="fa-solid fa-edit"></i>
                                 </a>

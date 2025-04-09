@@ -213,5 +213,27 @@ namespace BlogWeb.Areas.Management.Controllers
 		}
 
 
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var response = await _postService.DeleteAsync<APIResponse>(id, _token);
+
+			if (response == null && response.IsSuccess == false)
+			{
+				TempData["error"] = "Something went wrong!";
+				return RedirectToAction(nameof(Index));
+			}
+			TempData["success"] = "Post deleted successfully";
+			return RedirectToAction(nameof(Index));
+		}
+
+
+
+
 	}
+
+
 }
+
+
