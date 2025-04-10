@@ -23,7 +23,8 @@ namespace BlogWeb.Areas.Admin.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> Create()
+
+		public async Task<IActionResult> Create()
         {
 			UserCreateVM userCreateVM = new UserCreateVM
 			{

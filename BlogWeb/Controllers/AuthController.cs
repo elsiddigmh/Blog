@@ -5,6 +5,7 @@ using BlogWeb.Models.Dto;
 using BlogWeb.Services.IServices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Newtonsoft.Json;
@@ -18,12 +19,18 @@ namespace BlogWeb.Controllers
 		private readonly IUserService _userService;
 		private readonly IAuthService _authService;
 		private readonly IMapper _mapper;
-		public AuthController(IUserService userService, IMapper mapper, IAuthService authService)
+		private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly string _token;
+		public AuthController(IUserService userService, IMapper mapper, IAuthService authService, IHttpContextAccessor httpContextAccessor)
 		{
 			_userService = userService;
 			_mapper = mapper;
 			_authService = authService;
+			_httpContextAccessor = httpContextAccessor;
+			_token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
 		}
+
+
 
 		[HttpGet]
 		[Route("Register")]
