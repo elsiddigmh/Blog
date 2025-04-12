@@ -1,0 +1,8 @@
+﻿@model IEnumerable<BlogWeb.Models.VM.CategoryWithCountVM>
+
+@foreach(var category in Model)
+{
+    <li>
+        <a asp-controller="Category" asp-action="Index">@category.Name<span class="ml-auto"> (@category.PostCount)</span></a>
+    </li>
+}

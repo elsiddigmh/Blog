@@ -1,0 +1,16 @@
+﻿@model IEnumerable<BlogWeb.Models.Dto.CategoryDTO>
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" role="button"
+       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Articles
+    </a>
+    <div class="dropdown-menu">
+        @foreach (var category in Model)
+        {
+            <a class="dropdown-item" asp-controller="Category" asp-action="Index" asp-route-id="@category.Id">
+                @category.Name
+            </a>
+        }
+    </div>
+</li>

@@ -1,4 +1,5 @@
 ﻿@using BlogUtility
+@model BlogWeb.Models.Dto.CategoryDTO;
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpAcc
 <header class="navigation">
     <div class="container">
@@ -40,11 +41,7 @@
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Articles
                         </a>
-                        <div class="dropdown-menu">
-                            <a class="#" href="travel.html">Travel</a>
-                            <a class="#" href="travel.html">Lifestyle</a>
-                            <a class="#" href="travel.html">Cruises</a>
-                        </div>
+                        @await Component.InvokeAsync("CategoryMenu")
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a>

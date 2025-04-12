@@ -40,7 +40,7 @@ namespace BlogWeb.Areas.Management.Controllers
         {
             //var token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
 
-			APIResponse response = await _postService.GetAllAsync<APIResponse>(_token);
+			APIResponse response = await _postService.GetAllAsync<APIResponse>();
             var posts = JsonConvert.DeserializeObject<List<PostDTO>>(Convert.ToString(response.Result));
             _logger.LogInformation($"Token = {_token}");
 
@@ -136,7 +136,7 @@ namespace BlogWeb.Areas.Management.Controllers
 		public async Task<IActionResult> Update(int id)
 		{
 
-			var postResponse = await _postService.GetAsync<APIResponse>(id,_token);
+			var postResponse = await _postService.GetAsync<APIResponse>(id);
             if (postResponse != null && postResponse.IsSuccess == true)
             {
                 var categoryResponse = await _categoryService.GetAllAsync<APIResponse>();

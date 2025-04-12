@@ -59,23 +59,21 @@ namespace BlogWeb.Services
 			});
 		}
 
-		public Task<T> GetAllAsync<T>(string token)
+		public Task<T> GetAllAsync<T>()
 		{
 			return SendAsync<T>(new APIRequest
 			{
 				ApiType = SD.ApiType.GET,
-				Url = _appUrl + "/api/postAPI",
-				Token = token
+				Url = _appUrl + "/api/postAPI"
 			});
 		}
 
-		public Task<T> GetAsync<T>(int id, string token)
+		public Task<T> GetAsync<T>(int id)
 		{
 			return SendAsync<T>(new APIRequest
 			{
 				ApiType = SD.ApiType.GET,
-				Url = _appUrl + "/api/postAPI/" + id,
-				Token = token
+				Url = _appUrl + "/api/postAPI/" + id
 			});
 		}
 

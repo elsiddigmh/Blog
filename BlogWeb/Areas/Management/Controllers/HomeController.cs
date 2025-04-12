@@ -39,7 +39,7 @@ namespace BlogWeb.Areas.Admin.Controllers
 			var categoryResponse = await _categoryService.GetAllAsync<APIResponse>();
             var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(categoryResponse.Result));
 
-            var postResponse = await _postService.GetAllAsync<APIResponse>(_token);
+            var postResponse = await _postService.GetAllAsync<APIResponse>();
             var posts = JsonConvert.DeserializeObject<List<PostDTO>>(Convert.ToString(postResponse.Result));
 
 			//var commentResponse = await _commentService.GetAllAsync<APIResponse>();
