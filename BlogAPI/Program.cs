@@ -4,6 +4,7 @@ using BlogAPI.Repository;
 using BlogAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -95,6 +96,15 @@ if (app.Environment.IsDevelopment())
 //{
 //    app.UseExceptionHandler("/error"); // Use error handler in production
 //}
+
+app.UseStaticFiles(); // For wwwroot
+// This exposes the Uploads/Posts folder as a public URL
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Posts")),
+    RequestPath = "/Uploads/Posts"
+});
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

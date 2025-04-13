@@ -113,8 +113,9 @@ namespace BlogAPI.Controllers
 
 			if (postDTO.File != null)
 			{
-				string directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads\\Posts\\");
-				string filePath = $"{directoryPath + Guid.NewGuid()}_{Path.GetFileName(postDTO.File.FileName)}";
+                //string directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads\\Posts\\");
+                string directoryPath = "Uploads\\Posts\\";
+                string filePath = $"{directoryPath + Guid.NewGuid()}_{Path.GetFileName(postDTO.File.FileName)}";
 				using (var stream = new FileStream(filePath, FileMode.Create))
 				{
 					postDTO.File.CopyTo(stream);
@@ -147,18 +148,6 @@ namespace BlogAPI.Controllers
 		[Consumes("multipart/form-data")]
 		public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromForm] PostUpdateDTO postDTO)
 		{
-			//if (!ModelState.IsValid)
-			//{
-			//	var errors = ModelState.Values
-			//	.SelectMany(v => v.Errors)
-			//	.Select(e => e.ErrorMessage)
-			//	.ToList();
-			//	_response.StatusCode = HttpStatusCode.BadRequest;
-			//	_response.IsSuccess = false;
-			//	_response.ErrorMessages = errors;
-			//	return BadRequest(_response);
-			//}
-
 			if (id <= 0 || postDTO == null)
 			{
 				_response.StatusCode = HttpStatusCode.BadRequest;
@@ -188,7 +177,7 @@ namespace BlogAPI.Controllers
 				}
 
 				// Save new image
-				string directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads\\Posts\\");
+				string directoryPath = "Uploads\\Posts\\";
 				string filePath = $"{directoryPath + Guid.NewGuid()}_{Path.GetFileName(postDTO.File.FileName)}";
 				using (var stream = new FileStream(filePath, FileMode.Create))
 				{
@@ -198,6 +187,8 @@ namespace BlogAPI.Controllers
 			}
 
 			post.Slug = Helpers.Helpers.GenerateSlug(post.Title);
+			// Here fix problem of set PhotoUrl = null on update
+			// Continue in clean article content from html tags in razor view
 			await _postRepository.UpdateAsync(post);
 
 			_response.StatusCode = HttpStatusCode.OK;
