@@ -167,6 +167,7 @@ namespace BlogAPI.Controllers
 			}
 
 			Post post = _mapper.Map<Post>(postDTO);
+						post.Slug = Helpers.Helpers.GenerateSlug(post.Title);
 
 			if (postDTO.File != null)
 			{
@@ -185,8 +186,11 @@ namespace BlogAPI.Controllers
 				}
 				post.PhotoUrl = filePath;
 			}
+			else
+			{
+				post.PhotoUrl = existingPost.PhotoUrl;
+			}
 
-			post.Slug = Helpers.Helpers.GenerateSlug(post.Title);
 			// Here fix problem of set PhotoUrl = null on update
 			// Continue in clean article content from html tags in razor view
 			await _postRepository.UpdateAsync(post);
