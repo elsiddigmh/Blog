@@ -1,4 +1,5 @@
 ﻿@using BlogWeb.Models.Dto
+@using BlogWeb.Healpers
 
 @{
     var latestPosts = ViewData["latestPosts"] as List<PostDTO>;
@@ -19,7 +20,7 @@
                 @latestOne.Title
             </a>
         </h3>
-        <p class="card-text">@((latestOne.Content?.Length> 100 ? latestOne.Content.Substring(0,100) + "..." : latestOne.Content))</p>
+        <p class="card-text">@((latestOne.Content?.Length > 100 ? HtmlHelpers.StripHtml(latestOne.Content.Substring(0, 100)) + "..." : HtmlHelpers.StripHtml(latestOne.Content)))</p>
         <div class="content">
             <a class="read-more-btn" href="article.html">Read Full Article</a>
         </div>
@@ -30,8 +31,8 @@
     <a class="media align-items-center" href="article.html">
         <img loading="lazy" decoding="async" src="@baseUrl/@post.PhotoUrl" alt="Post Thumbnail" class="w-100">
         <div class="media-body ml-3">
-            <h3 style="margin-top:-5px">@post.Title</h3>
-            <p class="mb-0 small">Heading Here is example of hedings. You can use …</p>
+            <h3 style="margin-top:-5px">@((post.Title?.Length > 35 ? HtmlHelpers.StripHtml(post.Title.Substring(0, 35)) + "..." : HtmlHelpers.StripHtml(post.Title)))</h3>
+            <p class="mb-0 small">@((post.Content?.Length > 100 ? HtmlHelpers.StripHtml(post.Content.Substring(0, 100)) + "..." : HtmlHelpers.StripHtml(post.Content)))</p>
         </div>
     </a>
 }
