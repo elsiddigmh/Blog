@@ -1,5 +1,6 @@
 using BlogWeb.Models;
 using BlogWeb.Models.Dto;
+using BlogWeb.Models.VM;
 using BlogWeb.Services;
 using BlogWeb.Services.IServices;
 using Microsoft.AspNetCore.Http;
@@ -29,8 +30,11 @@ namespace BlogWeb.Controllers
             _token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
+            // Pagination => 5 Posts in Page
+            int pageSize = 5;
+
             var categoryResponse = await _categoryService.GetAllAsync<APIResponse>();
             var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(categoryResponse.Result));
 
@@ -40,10 +44,26 @@ namespace BlogWeb.Controllers
             var latestOne = posts.OrderByDescending(p => p.Id).FirstOrDefault();
             var latestPosts = posts.OrderByDescending(p => p.Id).Take(5).ToList();
 
+            var paginatedPosts = posts.OrderByDescending(p => p.Id)
+                                      .Skip((page - 1) * pageSize)
+                                      .Take(pageSize)
+                                      .ToList();
 
-            ViewData["latestOne"] = latestOne;
-            ViewData["latestPosts"] = latestPosts;
+            //var pagination = new PostPaginationVM
+            //{
+            //    Posts = paginatedPosts,
+            //    CurrentPage = page,
+            //    TotalPages = (int)Math.Ceiling((double)posts.Count / pageSize)
+            //};
+
             ViewData["baseUrl"] = _baseUrl;
+            ViewData["latestOne"] = latestOne;
+
+            ViewData["paginatedPosts"] = paginatedPosts;
+            ViewData["CurrentPage"] = page;
+            ViewData["TotalPages"] = (int)Math.Ceiling((double)posts.Count / pageSize);
+
+
 
             return View();
         }
