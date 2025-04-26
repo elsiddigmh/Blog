@@ -30,12 +30,27 @@ namespace BlogWeb.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Article(int id) { 
+        public async Task<IActionResult> Article(int id)
+        {
 
             var postResponse = await _postService.GetAsync<APIResponse>(id);
             var post = JsonConvert.DeserializeObject<PostDTO>(Convert.ToString(postResponse.Result));
-			ViewBag.Post = post;
-			return View();
+            ViewBag.Post = post;
+            return View();
+
+        }
+
+        public async Task<IActionResult> Search(string input)
+        {
+            var postsResponse = await _postService.GetAllAsync<APIResponse>();
+            var posts = JsonConvert.DeserializeObject<List<PostDTO>>(Convert.ToString(postsResponse.Result));
+            var searchResult = posts.Where(p => p.Title.Contains(input, StringComparison.OrdinalIgnoreCase)
+                                        || p.Content.Contains(input, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            ViewBag.Posts = searchResult;
+
+            return View();
+
 
         }
     }

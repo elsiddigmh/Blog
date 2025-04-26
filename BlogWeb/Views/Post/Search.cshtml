@@ -1,0 +1,49 @@
+﻿@using BlogWeb.Helpers;
+@using BlogWeb.Models.Dto;
+
+@{
+    var posts = ViewBag.Posts;
+}
+
+@if (posts.Count > 0)
+{
+    @foreach (var post in posts)
+    {
+        <div class="col-md-4 mb-4">
+            <article class="card article-card article-card-sm">
+                <a href="#">
+                    <div class="card-image">
+                        <div class="post-info">
+                            <span class="text-uppercase">03 Jun 2021</span>
+                            <span class="text-uppercase">2 minutes read</span>
+                        </div>
+                        <img loading="lazy" decoding="async" src="@Env.BaseUrl/@post.PhotoUrl" alt="Post Thumbnail" class="w-100">
+                    </div>
+                </a>
+                <div class="card-body px-0 pb-0">
+                    <ul class="post-meta mb-2">
+                        <li>
+                            <a href="#!">@post.Category.Name</a>
+                        </li>
+                    </ul>
+                    <h2>
+                        <a class="post-title" asp-controller="Post" asp-action="Article" asp-route-id="@post.Id">
+                            @((post.Title?.Length > 35 ? HtmlHelpers.StripHtml(post.Title.Substring(0, 35)) + "..." : HtmlHelpers.StripHtml(post.Title)))
+                        </a>
+                    </h2>
+                    <p class="card-text">@((post.Content?.Length > 100 ? HtmlHelpers.StripHtml(post.Content.Substring(0, 100)) + "..." : HtmlHelpers.StripHtml(post.Content)))</p>
+                    <div class="content">
+                        <a class="read-more-btn" asp-controller="Post" asp-action="Article" asp-route-id="@post.Id">Read Full Article</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    }
+
+}
+else
+{
+    <div class="col-md-6 mb-4">
+        <div class="alert alert-warning text-center">The search did not match any results.</div>
+    </div>
+}
