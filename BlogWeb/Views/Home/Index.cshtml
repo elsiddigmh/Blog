@@ -36,13 +36,13 @@
                         </li>
                     </ul>
                     <h2 class="h1">
-                        <a class="post-title" href="#">
+                        <a class="post-title" asp-controller="Post" asp-action="Article" asp-route-id="@latestOne.Id">
                             @latestOne.Title
                         </a>
                     </h2>
                     <p class="card-text">@((latestOne.Content?.Length > 250 ? HtmlHelpers.StripHtml(latestOne.Content.Substring(0, 250)) + "..." : HtmlHelpers.StripHtml(latestOne.Content)))</p>
                     <div class="content">
-                        <a class="read-more-btn" href="#">Read Full Article</a>
+                        <a class="read-more-btn" asp-controller="Post" asp-action="Article" asp-route-id="@latestOne.Id">Read Full Article</a>
                     </div>
                 </div>
             </article>
@@ -67,13 +67,13 @@
                             </li>
                         </ul>
                         <h2>
-                            <a class="post-title" href="#">
+                            <a class="post-title" asp-controller="Post" asp-action="Article" asp-route-id="@post.Id">
                                 @((post.Title?.Length > 35 ? HtmlHelpers.StripHtml(post.Title.Substring(0, 35)) + "..." : HtmlHelpers.StripHtml(post.Title)))
                             </a>
                         </h2>
                         <p class="card-text">@((post.Content?.Length > 100 ? HtmlHelpers.StripHtml(post.Content.Substring(0, 100)) + "..." : HtmlHelpers.StripHtml(post.Content)))</p>
                         <div class="content">
-                            <a class="read-more-btn" href="#">Read Full Article</a>
+                            <a class="read-more-btn" asp-controller="Post" asp-action="Article" asp-route-id="@post.Id">Read Full Article</a>
                         </div>
                     </div>
                 </article>

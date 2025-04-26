@@ -16,19 +16,19 @@
     </div>
     <div class="card-body px-0 pb-1">
         <h3>
-            <a class="post-title post-title-sm" asp-controller="" asp-action="">
+            <a class="post-title post-title-sm" asp-controller="Post" asp-action="Article" asp-route-id="@latestOne.Id">
                 @latestOne.Title
             </a>
         </h3>
         <p class="card-text">@((latestOne.Content?.Length > 100 ? HtmlHelpers.StripHtml(latestOne.Content.Substring(0, 100)) + "..." : HtmlHelpers.StripHtml(latestOne.Content)))</p>
         <div class="content">
-            <a class="read-more-btn" href="article.html">Read Full Article</a>
+            <a class="read-more-btn" asp-controller="Post" asp-action="Article" asp-route-id="@latestOne.Id">Read Full Article</a>
         </div>
     </div>
 </article>
 @foreach(var post in @latestPosts)
 {
-    <a class="media align-items-center" href="article.html">
+    <a class="media align-items-center" asp-controller="Post" asp-action="Article" asp-route-id="@post.Id">
         <img loading="lazy" decoding="async" src="@baseUrl/@post.PhotoUrl" alt="Post Thumbnail" class="w-100">
         <div class="media-body ml-3">
             <h3 style="margin-top:-5px">@((post.Title?.Length > 35 ? HtmlHelpers.StripHtml(post.Title.Substring(0, 35)) + "..." : HtmlHelpers.StripHtml(post.Title)))</h3>
