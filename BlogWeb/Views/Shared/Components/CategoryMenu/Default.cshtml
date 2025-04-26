@@ -8,7 +8,7 @@
     <div class="dropdown-menu">
         @foreach (var category in Model)
         {
-            <a class="dropdown-item" asp-controller="Category" asp-action="Index" asp-route-id="@category.Id">
+            <a class="dropdown-item" asp-controller="Category" asp-action="Show" asp-route-id="@category.Id">
                 @category.Name
             </a>
         }

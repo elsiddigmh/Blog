@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace BlogWeb.Healpers
+namespace BlogWeb.Helpers
 {
     public static class HtmlHelpers
     {
