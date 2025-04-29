@@ -64,13 +64,6 @@ namespace BlogAPI.Controllers
 				return NotFound(_response);
 			}
 
-			//Manuel Mapping
-			//PostDTO postDTO = new PostDTO
-			//{
-			//    Id = id,
-			//   ... = ... ect
-			//}
-			//
 			PostDTO postDTO = _mapper.Map<PostDTO>(post);
 
 			_response.StatusCode = HttpStatusCode.OK;
