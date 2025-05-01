@@ -6,4 +6,5 @@ namespace BlogAPI.Repository.IRepository
     {
         Task<Category> UpdateAsync(Category entity);
     }
+
 }
